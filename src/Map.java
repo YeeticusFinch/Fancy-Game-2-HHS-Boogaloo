@@ -76,6 +76,10 @@ public class Map {
 						g.fill(100, 255, 100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
+					case '3':
+						g.fill(255, 255, 100);
+						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						break;
 				}
 			}
 		}

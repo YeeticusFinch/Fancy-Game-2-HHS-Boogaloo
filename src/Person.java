@@ -43,6 +43,12 @@ public abstract class Person {
 		return y;
 	}
 	
+	/*public void spawn(ArrayList<String> map) {
+		for (int i = 0; i < map.length(); i++) {
+			for (int j = 0; j < map.get(i))
+		}
+	}*/
+	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 		g.pushStyle();
 		
