@@ -48,7 +48,7 @@ public abstract class Enemy {
 		g.pushStyle();
 		
 		if (icon == null)
-			icon = g.loadImage("images" + FileIO.fileSep + "h" + id + ".png");
+			icon = g.loadImage("images" + FileIO.fileSep + "e" + id + ".png");
 		g.fill(0);
 		
 		hw = g.width*0.06f;
