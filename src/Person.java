@@ -9,6 +9,7 @@ public abstract class Person {
 	protected int speed;
 	protected int dmg;
 	protected int hp;
+	protected int maxHP;
 	protected int x;
 	protected int y;
 	protected int xo;
@@ -33,6 +34,7 @@ public abstract class Person {
 		this.speed = speed;
 		this.dmg = dmg;
 		this.hp = hp;
+		maxHP = hp;
 	}
 	
 	public int getX() {
@@ -123,9 +125,15 @@ public abstract class Person {
 			f2y *= 2*Math.sin(1.5*y);
 		}
 		//g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
-		if (map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f))) == '1') {
+		char fancy = map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f)));
+		if (fancy == '1') {
 			x = xo;
 			y = yo;
+		} else if (fancy == '5') {
+			if (hp < maxHP) {
+				map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '0' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
+				hp = Math.min(hp+maxHP/2, maxHP);
+			}
 		} else {
 			xo = x;
 			yo = y;

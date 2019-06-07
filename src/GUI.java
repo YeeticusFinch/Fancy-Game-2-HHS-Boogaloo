@@ -72,7 +72,7 @@ public class GUI extends PApplet {
 				
 		translate(tx, ty);
 		map.draw(this, tx, ty);
-		if (player.collide(this, map.getCurrentMap()) == '2') {
+		if (player.collide(this, map.getCurrentMap()) == '2' && 0 == enemies.size()) {
 			map.loadMap(map.getMap()+1);
 			map.setMap(map.getMap()+1);
 			player.spawn(map.getCurrentMap(), this);
@@ -90,6 +90,12 @@ public class GUI extends PApplet {
 				e.deleteProjectiles();
 			}
 			e.projectileCollide(this, player);
+		}
+		
+		for (int i = 0; i < enemies.size(); i++) {
+			if (enemies.get(i).hp <=0) {
+				enemies.remove(i);
+			}
 		}
 		player.projectileCollide(this, enemies);
 		textAlign(LEFT);

@@ -100,7 +100,7 @@ public class Osman extends Person {
 			for (Enemy e : enemies) {
 				if (e.hp > 0 && f.collide(e)) {
 					
-					if (Math.random()>((float)hp/18	)) {
+					if (Math.random()>((float)hp/maxHP*1.2f	)) {
 						int mx = (int)((float)(Math.random()*200-100));
 						int my = (int)((float)(Math.random()*200-100));
 					
@@ -119,7 +119,7 @@ public class Osman extends Person {
 		
 		for (int i = 0; i < hPacks.size(); i++) {
 			if (hPacks.get(i).collide(this)) {
-				if (hp < 15) {
+				if (hp < maxHP) {
 					hp++;
 					g.pushStyle();
 					g.ellipseMode(PConstants.CORNER);

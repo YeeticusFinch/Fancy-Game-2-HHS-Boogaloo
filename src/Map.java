@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PImage;
 
 public class Map {
 
@@ -10,6 +11,7 @@ public class Map {
 	private ArrayList<ArrayList<Integer>> mDet = new ArrayList<ArrayList<Integer>>();
 	private ArrayList<Integer> maxX = new ArrayList<Integer>();
 	private ArrayList<Integer> maxY = new ArrayList<Integer>();
+	private PImage hPack;
 	private int m;
 
 	public void loadMap(int i) {
@@ -63,6 +65,8 @@ public class Map {
 	}
 
 	public void draw(PApplet g, float tx, float ty) {
+		if (hPack == null)
+			hPack = g.loadImage("images" + FileIO.fileSep + "hPack.png");
 		g.pushStyle();
 		for (int i = 1; i < map.get(m).size(); i++) {
 			for (int j = 0; j < map.get(m).get(i).length(); j++) {
@@ -76,7 +80,10 @@ public class Map {
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 					case '2': //Door to next map
-						g.fill(100, 255, 100);
+						if (GUI.enemies.size()>0)
+							g.fill(50, 100, 50);
+						else
+							g.fill(100, 255, 100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 					case '3': //Player spawn
@@ -86,6 +93,13 @@ public class Map {
 					case '4': //Enemy Spawn
 						g.fill(255, 100, 100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						break;
+					case '5': //Health Pack
+						g.fill(100);
+						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						g.fill(255);
+						g.rect(g.width*0.05f*j+g.width*0.01f, g.width*0.05f*(i-1)+g.width*0.01f, g.width*0.05f-g.width*0.02f, g.width*0.05f-g.width*0.02f);
+						g.image(hPack, g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 				}
 			}
