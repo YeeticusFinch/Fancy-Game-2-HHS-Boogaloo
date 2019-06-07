@@ -32,10 +32,11 @@ public abstract class Enemy {
 		
 	}
 	
-	public Enemy(int speed, int dmg, int hp) {
+	public Enemy(int speed, int dmg, int hp, int id) {
 		this.speed = speed;
 		this.dmg = dmg;
 		this.hp = hp;
+		this.id = id;
 		x = -1;
 		y = -1;
 	}
@@ -111,7 +112,7 @@ public abstract class Enemy {
 		this.yo = y;
 	}
 	
-	public void collide(PApplet g, ArrayList<String> map) {
+	public char collide(PApplet g, ArrayList<String> map) {
 		if (xo != x) {
 			f1x = xo-x;
 			f2x = x-xo;
@@ -132,7 +133,11 @@ public abstract class Enemy {
 			yo = y;
 		}
 		
+		return map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f)));
+		
 	}
+	
+	public abstract void deleteProjectiles();
 	
 	public abstract void move(int px, int py);
 	

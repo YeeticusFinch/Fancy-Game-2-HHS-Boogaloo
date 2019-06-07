@@ -86,6 +86,8 @@ public class GUI extends PApplet {
 				e.draw(this, keys, map.getCurrentMap());
 				e.move(player.getX(), player.getY());
 				e.collide(this, map.getCurrentMap());
+			} else {
+				e.deleteProjectiles();
 			}
 			e.projectileCollide(this, player);
 		}

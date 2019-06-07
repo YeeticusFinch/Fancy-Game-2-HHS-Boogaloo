@@ -36,6 +36,9 @@ public class Map {
 						case 0:
 							GUI.enemies.add(new Darius());
 							break;
+						case 1:
+							GUI.enemies.add(new VonStein());
+							break;
 					}
 				}
 			}
