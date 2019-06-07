@@ -25,6 +25,8 @@ public abstract class Enemy {
 	protected float hw;
 	protected float hh;
 	protected int id;
+	protected int vx;
+	protected int vy;
 	
 	public Enemy() {
 		

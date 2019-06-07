@@ -72,8 +72,11 @@ public class GUI extends PApplet {
 			player.spawn(map.getCurrentMap(), this);
 		}
 		player.draw(this, selected, keys, map.getCurrentMap());
-		for (Enemy e : enemies)
+		for (Enemy e : enemies) {
 			e.draw(this, keys, map.getCurrentMap());
+			e.move(player.getX(), player.getY());
+			e.collide(this, map.getCurrentMap());
+		}
 		//text("YEET", mouseX-tx, mouseY-ty);
 	}
 	
