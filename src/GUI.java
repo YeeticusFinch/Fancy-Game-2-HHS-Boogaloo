@@ -6,11 +6,11 @@ import processing.core.PImage;
 public class GUI extends PApplet {
 	
 	private String[] charNames = {"Smallboi", "Rocket Man", "Yes Yes Yes Man", "Fancy Boi", "EEEEEEEEEEEEEE"};
-	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing",
-			"Slowmoving with an obsession with nukes, throws mini nukes at people",
-			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain",
-			"Medium speed, throws fancy thumbs at a long range",
-			"High speed, shoots really low range electric sparks, but they travel further through walls"
+	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing\nLeftClick to pass elbow connector and generate health packs, RightClick to dash, \nSpace+arrowkey to dodge",
+			"Slowmoving with an obsession with nukes, throws mini nukes at people\nLeftClick to throw nuke",
+			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain\nLeftClick to yell \"Yes Yes Yes\"",
+			"Medium speed, throws fancy thumbs at a long range\nLeftClick to throw thumb",
+			"High speed, shoots really low range electric sparks, but they travel further through walls\nLeftClick to zap"
 	};
 	
 	Map map = new Map();
@@ -92,6 +92,9 @@ public class GUI extends PApplet {
 			e.projectileCollide(this, player);
 		}
 		player.projectileCollide(this, enemies);
+		textAlign(LEFT);
+		translate(-tx, -ty);
+		text("HP: " + player.hp, width*0.2f, height*0.03f);
 		//text("YEET", mouseX-tx, mouseY-ty);
 	}
 	

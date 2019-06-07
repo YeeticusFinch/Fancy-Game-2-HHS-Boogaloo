@@ -11,6 +11,7 @@ public class Projectile {
 	PImage pic;
 	boolean penetration = false;
 	boolean ghost = false;
+	boolean halt = false;
 	public Projectile(int x, int y, int vx, int vy, PImage pic, float size) {
 		this.x = x;
 		this.y = y;
@@ -39,6 +40,8 @@ public class Projectile {
 		this.size = size;
 		if (special.equalsIgnoreCase("ghost"))
 			ghost = true;
+		else if (special.equalsIgnoreCase("halt"))
+			halt = true;
 	}
 	
 	public void draw(PApplet g, ArrayList<String> map) {
@@ -51,6 +54,11 @@ public class Projectile {
 			if (map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f))) == '1') {
 				if (ghost) {
 					t = 0;
+				} else if (halt) {
+					x+=vx;
+					y+=vy;
+					vx = 0;
+					vy = 0;
 				}
 				else if (!penetration) {
 					x-=vx;
