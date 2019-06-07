@@ -60,7 +60,7 @@ public class GUI extends PApplet {
 			ty = 0;
 		else if(player.getY() > (map.maxY()-1)*width*0.05f-height*0.5f)
 			ty = -((map.maxY()-1)*width*0.05f-height);
-		System.out.println("player.getX() = " + player.getX() + "player.getY() = " + player.getY());
+		//System.out.println("player.getX() = " + player.getX() + "player.getY() = " + player.getY());
 		//System.out.println("tx = " + tx);
 		//System.out.println("ty = " + ty);
 				

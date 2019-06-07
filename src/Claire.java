@@ -6,7 +6,7 @@ import processing.core.PImage;
 public class Claire extends Person {
 
 	private ArrayList<Projectile> sparks = new ArrayList<Projectile>();
-	private PImage sparkPic;
+	private PImage[] sparkPic = new PImage[7];
 	private int mx = 0;
 	private int spark = 0;
 	private int my = 0;
@@ -31,19 +31,20 @@ public class Claire extends Person {
 	}
 	
 	public void spark(int mx, int my) {
-		mx = (int)((float)super.x-mx)+(int)(Math.random()*800-400);
-		my = (int)((float)super.y-my)+(int)(Math.random()*800-400);
+		mx = (int)((float)super.x*(Math.random()*2)-mx*(Math.random()+0.5f));
+		my = (int)((float)super.y*(Math.random()*2)-my*(Math.random()+0.5f));
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		sparks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), sparkPic, 0.07f));
+		sparks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), sparkPic[(int)(Math.random()*7)], (float)Math.random()*0.05f+0.02f));
 	}
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		
-		if (sparkPic == null)
-			sparkPic = g.loadImage("images" + FileIO.fileSep + "spark.png");
+		if (sparkPic[0] == null)
+			for (int i = 0; i < sparkPic.length; i++)
+				sparkPic[i] = g.loadImage("images" + FileIO.fileSep + "s" + i + ".png");
 		
 		for (int i = 0; i < sparks.size(); i++) {
 			if (sparks.get(i).t<Math.random()*15)
