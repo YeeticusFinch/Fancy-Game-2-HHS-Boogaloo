@@ -71,7 +71,9 @@ public class GUI extends PApplet {
 			map.setMap(map.getMap()+1);
 			player.spawn(map.getCurrentMap(), this);
 		}
-		player.draw(this, selected, keys, map.getCurrentMap());
+		
+		if (player.hp > 0)
+			player.draw(this, selected, keys, map.getCurrentMap());
 		
 		for (Enemy e : enemies) {
 			if (e.hp > 0) {
@@ -79,6 +81,7 @@ public class GUI extends PApplet {
 				e.move(player.getX(), player.getY());
 				e.collide(this, map.getCurrentMap());
 			}
+			e.projectileCollide(this, player);
 		}
 		player.projectileCollide(this, enemies);
 		//text("YEET", mouseX-tx, mouseY-ty);

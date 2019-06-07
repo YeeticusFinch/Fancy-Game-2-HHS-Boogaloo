@@ -1,12 +1,38 @@
+import java.util.ArrayList;
+
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PImage;
 
 public class Darius extends Enemy {
 
 	boolean rushing = false;
 	
+	ArrayList<Projectile> homework = new ArrayList<Projectile>();
+	PImage[] hwPics = new PImage[4];
+	
 	public Darius() {
 		super(5, 4, 10); //Speed, Damage, HP
 		if (Math.random() > 0.5)
 			rushing = true;
+	}
+	
+	public void draw(PApplet g, boolean[] keys, ArrayList<String> map) {
+		super.draw( g, keys, map);
+		if (hwPics[0] == null) {
+			for (int i = 0; i < hwPics.length; i++)
+				hwPics[i] = g.loadImage("images" + FileIO.fileSep + "hw" + i + ".png");
+			System.out.println("Loaded Darius images");
+		}
+		
+		for (int j = 0; j < homework.size(); j++) {
+			if (homework.get(j).t<22)
+				homework.get(j).draw(g, map);
+			else
+				homework.remove(j);
+			
+		}
+		
 	}
 	
 	@Override
@@ -28,18 +54,42 @@ public class Darius extends Enemy {
 		y+=vy;
 		if (Math.random()>0.99)
 			rushing = !rushing;
+		
+		if (Math.random() > 0.99)
+			attack(px, py);
 	}
 
 	@Override
 	public void attack(int mx, int my) {
 		// TODO Auto-generated method stub
+		mx = (int)((float)super.x-mx);
+		my = (int)((float)super.y-my);
 		
+		double temp = -Math.sqrt(mx*mx + my*my);
+		
+		homework.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), hwPics[(int)(Math.random()*4)], 0.06f));
+		
+		System.out.println("Throwing hw");
 	}
 
 	@Override
 	public void attack2(int mx, int my) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void projectileCollide(PApplet g, Person e) {
+		for (Projectile f : homework) {
+			if (e.hp > 0 && f.collide(e)) {
+				e.hp -= f.size*0.5f;
+				g.pushStyle();
+				g.ellipseMode(PConstants.CORNER);
+				g.fill(255, 0, 0);
+				g.ellipse(e.x, e.y, e.hw, e.hh);
+				g.popStyle();
+			}
+			
+		}
 	}
 
 	

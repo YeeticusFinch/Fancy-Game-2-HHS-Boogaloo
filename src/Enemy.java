@@ -139,5 +139,7 @@ public abstract class Enemy {
 	public abstract void attack(int mx, int my);
 	
 	public abstract void attack2(int mx, int my);
+
+	public abstract void projectileCollide(PApplet g, Person p);
 	
 }
