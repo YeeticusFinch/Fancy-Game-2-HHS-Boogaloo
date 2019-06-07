@@ -64,20 +64,24 @@ public class Map {
 		for (int i = 1; i < map.get(m).size(); i++) {
 			for (int j = 0; j < map.get(m).get(i).length(); j++) {
 				switch ((char)map.get(m).get(i).charAt(j)) {
-					case '0':
+					case '0': //Empty
 						g.fill(220);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
-					case '1':
+					case '1': //Wall
 						g.fill(100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
-					case '2':
+					case '2': //Door to next map
 						g.fill(100, 255, 100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
-					case '3':
+					case '3': //Player spawn
 						g.fill(255, 255, 100);
+						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						break;
+					case '4': //Enemy Spawn
+						g.fill(255, 100, 100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 				}

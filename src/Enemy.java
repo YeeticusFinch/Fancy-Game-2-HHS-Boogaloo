@@ -34,6 +34,8 @@ public abstract class Enemy {
 		this.speed = speed;
 		this.dmg = dmg;
 		this.hp = hp;
+		x = -1;
+		y = -1;
 	}
 	
 	public int getX() {
@@ -44,8 +46,26 @@ public abstract class Enemy {
 		return y;
 	}
 	
+	public void spawn(ArrayList<String> map, PApplet g) {
+		for (int i = 0; i < map.size(); i++) {
+			for (int j = 0; j < map.get(i).length(); j++) {
+				if (map.get(i).charAt(j) == '4' && Math.random()>0.6) {
+					x = (int)(g.width*0.05f*(j));
+					y = (int)(g.width*0.05f*(i-1.5f));
+					System.out.println("Placing at spawnpoint " + x + ", " + y);
+					xo = x;
+					yo = y;
+				}
+			}
+		}
+	}
+	
 	public void draw(PApplet g, boolean[] keys, ArrayList<String> map) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 		g.pushStyle();
+		
+		while (x == -1 && y == -1) {
+			spawn(map, g);
+		}
 		
 		if (icon == null)
 			icon = g.loadImage("images" + FileIO.fileSep + "e" + id + ".png");
