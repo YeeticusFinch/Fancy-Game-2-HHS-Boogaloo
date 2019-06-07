@@ -43,11 +43,19 @@ public abstract class Person {
 		return y;
 	}
 	
-	/*public void spawn(ArrayList<String> map) {
-		for (int i = 0; i < map.length(); i++) {
-			for (int j = 0; j < map.get(i))
+	public void spawn(ArrayList<String> map, PApplet g) {
+		for (int i = 0; i < map.size(); i++) {
+			for (int j = 0; j < map.get(i).length(); j++) {
+				if (map.get(i).charAt(j) == '3') {
+					x = (int)(g.width*0.05f*(j));
+					y = (int)(g.width*0.05f*(i-1.5f));
+					System.out.println("Placing at spawnpoint " + x + ", " + y);
+					xo = x;
+					yo = y;
+				}
+			}
 		}
-	}*/
+	}
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 		g.pushStyle();

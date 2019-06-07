@@ -33,6 +33,7 @@ public class GUI extends PApplet {
 			sel[i] = loadImage("images" + System.getProperty("file.separator") + "sel" + i + ".png");
 		}
 		map.loadMap(0);
+		
 	}
 	
 	public void draw() {
@@ -46,15 +47,29 @@ public class GUI extends PApplet {
 	
 	public void drawPlay() {
 		clear();
-		if(player.getX() >= width*0.5f && player.getX() <= map.maxX()*g.width*0.05f-width*0.5f)
+		if(player.getX() >= width*0.5f && player.getX() <= map.maxX()*width*0.05f-width*0.5f)
 			tx= -player.getX()+width*0.5f;
-		if(player.getY() >= height*0.5f && player.getY() <= (map.maxY()-1)*g.width*0.05f-height*0.5f)
+		else if(player.getX() < width*0.5f)
+			tx = 0;
+		else if (player.getX() > map.maxX()*width*0.05f-width*0.5f)
+			tx = -(map.maxX()*width*0.05f-width);
+		
+		if(player.getY() >= height*0.5f && player.getY() <= (map.maxY()-1)*width*0.05f-height*0.5f)
 			ty= -player.getY()+height*0.5f;
+		else if(player.getY() < height*0.5f)//ahem osman
+			ty = 0;
+		else if(player.getY() > (map.maxY()-1)*width*0.05f-height*0.5f)
+			ty = -((map.maxY()-1)*width*0.05f-height);
+		System.out.println("player.getX() = " + player.getX() + "player.getY() = " + player.getY());
+		//System.out.println("tx = " + tx);
+		//System.out.println("ty = " + ty);
+				
 		translate(tx, ty);
 		map.draw(this, tx, ty);
 		if (player.collide(this, map.getCurrentMap()) == '2') {
 			map.loadMap(map.getMap()+1);
 			map.setMap(map.getMap()+1);
+			player.spawn(map.getCurrentMap(), this);
 		}
 		player.draw(this, selected, keys, map.getCurrentMap());
 		for (Enemy e : enemies)
@@ -104,6 +119,7 @@ public class GUI extends PApplet {
 						break;
 				}
 				player.setLoc((int)(width*0.2), (int)(height*0.2));
+				player.spawn(map.getCurrentMap(), this);
 			}
 		} else if (phase == PLAY) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 			
