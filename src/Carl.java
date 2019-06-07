@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 public class Carl extends Person {
@@ -45,5 +46,20 @@ public class Carl extends Person {
 			
 		}
 		
+	}
+	
+	public void projectileCollide(PApplet g, ArrayList<Enemy> enemies) {
+		for (Projectile f : thumbs) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size*0.8f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
 	}
 }

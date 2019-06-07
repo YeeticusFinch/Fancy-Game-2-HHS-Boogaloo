@@ -58,4 +58,9 @@ public class Projectile {
 		
 		return collide(other.getX(), other.getY(), other.hw, other.hh);
 	}
+	
+	public boolean collide(Enemy other) {
+		
+		return collide(other.getX(), other.getY(), other.hw, other.hh);
+	}
 }

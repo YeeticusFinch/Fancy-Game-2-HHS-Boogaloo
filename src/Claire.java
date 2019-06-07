@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 public class Claire extends Person {
@@ -60,5 +61,19 @@ public class Claire extends Person {
 			spark-=1;
 		}
 		
+	}
+	
+	public void projectileCollide(PApplet g, ArrayList<Enemy> enemies) {
+		for (Projectile f : sparks) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size;
+					g.pushStyle();
+					g.image(sparkPic[(int)(Math.random()*7)], e.x, e.y, e.hw, e.hh);
+					g.image(sparkPic[(int)(Math.random()*7)], e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
 	}
 }
