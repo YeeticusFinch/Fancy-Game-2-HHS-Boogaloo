@@ -6,6 +6,12 @@ import processing.core.PImage;
 public class GUI extends PApplet {
 	
 	private String[] charNames = {"Smallboi", "Rocket Man", "Yes Yes Yes Man", "Fancy Boi", "EEEEEEEEEEEEEE"};
+	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing",
+			"Slowmoving with an obsession with nukes, throws mini nukes at people",
+			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain",
+			"Medium speed, throws fancy thumbs at a long range",
+			"High speed, shoots really low range electric sparks, but they travel further through walls"
+	};
 	
 	Map map = new Map();
 	
@@ -99,15 +105,16 @@ public class GUI extends PApplet {
 		} else {
 			textAlign(LEFT);
 			textSize(width*0.02f);
-			text("Character Chosen: " + charNames[selected], width*0.01f, height*0.04f);
+			text("Character Chosen: " + charNames[selected] + "\nDescription: " + desc[selected], width*0.01f, height*0.04f);
 			textAlign(CENTER);
-			text("Press SPACE to start", width*0.5f, height*0.9f);
+			text("Press SPACE to start\nOr press BACKSPACE to go back", width*0.5f, height*0.9f);
 			image(sel[selected], width*0.2f, height*0.2f, width*0.6f, height*0.6f);
 		}
 		
 	}
 	
 	public void keyPressed() {
+		//System.out.println(keyCode);
 		if (phase == SELECTION && selected != -1) {
 			if (keyCode == 32) {
 				phase = PLAY;
@@ -130,6 +137,8 @@ public class GUI extends PApplet {
 				}
 				player.setLoc((int)(width*0.2), (int)(height*0.2));
 				player.spawn(map.getCurrentMap(), this);
+			} else if (keyCode == 8) {
+				selected = -1;
 			}
 		} else if (phase == PLAY) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 			

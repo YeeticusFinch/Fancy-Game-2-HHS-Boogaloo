@@ -10,6 +10,7 @@ public class Projectile {
 	float size = 0;
 	PImage pic;
 	boolean penetration = false;
+	boolean ghost = false;
 	public Projectile(int x, int y, int vx, int vy, PImage pic, float size) {
 		this.x = x;
 		this.y = y;
@@ -29,6 +30,17 @@ public class Projectile {
 		this.penetration = penetration;
 	}
 	
+	public Projectile (int x, int y, int vx, int vy, PImage pic, float size, String special) {
+		this.x = x;
+		this.y = y;
+		this.vx = vx;
+		this.vy = vy;
+		this.pic = pic;
+		this.size = size;
+		if (special.equalsIgnoreCase("ghost"))
+			ghost = true;
+	}
+	
 	public void draw(PApplet g, ArrayList<String> map) {
 		g.image(pic, x-g.width*size*0.5f, y-g.width*size*0.5f, g.width*size, g.width*size);
 		x+=vx;
@@ -37,7 +49,10 @@ public class Projectile {
 		//System.out.println(map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f))));
 		if (1+(int)((y+g.width*0.025f)/(g.width*0.05f)) < map.size() && 1+(int)((y+g.width*0.025f)/(g.width*0.05f)) >= 0 && (int)((x+g.width*0.025f)/(g.width*0.05f)) >= 0 && (int)((x+g.width*0.025f)/(g.width*0.05f)) < map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).length()) {
 			if (map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f))) == '1') {
-				if (!penetration) {
+				if (ghost) {
+					t = 0;
+				}
+				else if (!penetration) {
 					x-=vx;
 					y-=vy;
 					t = 1000;

@@ -37,7 +37,7 @@ public class Claire extends Person {
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		sparks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), sparkPic[(int)(Math.random()*7)], (float)Math.random()*0.05f+0.02f));
+		sparks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), sparkPic[(int)(Math.random()*7)], (float)Math.random()*0.05f+0.02f, "ghost"));
 	}
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
@@ -48,7 +48,7 @@ public class Claire extends Person {
 				sparkPic[i] = g.loadImage("images" + FileIO.fileSep + "s" + i + ".png");
 		
 		for (int i = 0; i < sparks.size(); i++) {
-			if (sparks.get(i).t<Math.random()*15)
+			if (sparks.get(i).t<Math.random()*5)
 				sparks.get(i).draw(g, map);
 			else
 				sparks.remove(i);
