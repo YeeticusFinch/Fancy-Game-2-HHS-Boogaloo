@@ -7,7 +7,9 @@ import processing.core.PImage;
 public class Claire extends Person {
 
 	private ArrayList<Projectile> sparks = new ArrayList<Projectile>();
+	private ArrayList<Projectile> foxes = new ArrayList<Projectile>();
 	private PImage[] sparkPic = new PImage[7];
+	private PImage fox;
 	private int mx = 0;
 	private int spark = 0;
 	private int my = 0;
@@ -28,7 +30,13 @@ public class Claire extends Person {
 	@Override
 	public void attack2(int mx, int my) { //Gives elbow connector
 		
+		mx = (int)((float)super.x-mx);
+		my = (int)((float)super.y-my);
 		
+		double temp = -Math.sqrt(mx*mx + my*my);
+		
+		foxes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), fox, 0.1f));
+	
 	}
 	
 	public void spark(int mx, int my) {
@@ -43,6 +51,8 @@ public class Claire extends Person {
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		
+		if (fox == null)
+			fox = g.loadImage("images"+FileIO.fileSep + "fox.png");
 		if (sparkPic[0] == null)
 			for (int i = 0; i < sparkPic.length; i++)
 				sparkPic[i] = g.loadImage("images" + FileIO.fileSep + "s" + i + ".png");
@@ -52,6 +62,13 @@ public class Claire extends Person {
 				sparks.get(i).draw(g, map);
 			else
 				sparks.remove(i);
+			
+		}
+		for (int i = 0; i < foxes.size(); i++) {
+			if (foxes.get(i).t<30)
+				foxes.get(i).draw(g, map);
+			else
+				foxes.remove(i);
 			
 		}
 		
@@ -72,6 +89,13 @@ public class Claire extends Person {
 					g.image(sparkPic[(int)(Math.random()*7)], e.x, e.y, e.hw, e.hh);
 					g.image(sparkPic[(int)(Math.random()*7)], e.x, e.y, e.hw, e.hh);
 					g.popStyle();
+				}
+			}
+		}
+		for (Projectile f : foxes) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.fox = 600;
 				}
 			}
 		}

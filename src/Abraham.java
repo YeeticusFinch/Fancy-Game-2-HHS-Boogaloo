@@ -11,6 +11,7 @@ public class Abraham extends Person {
 	int yes = 0;
 	int mx=0;
 	int my=0;
+	boolean throwable = true;
 	
 	public Abraham() {
 		super(4, 10, 25); //Speed, Damage, HP
@@ -18,10 +19,12 @@ public class Abraham extends Person {
 	
 	@Override
 	public void attack(int mx, int my) { //YES YES YES
-		
-		yes = 30;
-		this.mx = mx;
-		this.my = my;
+		if (throwable) {
+			yes = 30;
+			this.mx = mx;
+			this.my = my;
+			throwable = false;
+		}
 	}
 	
 	public void yes(int mx, int my) {
@@ -57,6 +60,9 @@ public class Abraham extends Person {
 			if (yes%10==0)
 				yes(mx, my);
 			yes-=1;
+		}
+		if (yes == 0) {
+			throwable = true;
 		}
 		
 	}

@@ -10,6 +10,7 @@ public class Anand extends Person {
 	private ArrayList<Projectile> fire = new ArrayList<Projectile>();
 	private PImage nukePic;
 	private PImage firePic;
+	int throwCool = 0;
 	
 	public Anand() {
 		super(3, 4, 20); //Speed, Damage, HP
@@ -17,16 +18,18 @@ public class Anand extends Person {
 	
 	@Override
 	public void attack(int mx, int my) { //Throws nuke
-
-		mx = (int)((float)super.x-mx);
-		my = (int)((float)super.y-my);
-		
-		double temp = -Math.sqrt(mx*mx + my*my);
-		
-		if (Math.random()>0.1)
-			nukes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(10*mx/temp), (int)(10*my/temp), nukePic, 0.09f));
-		else
-			explosion(x, y);
+		if (throwCool == 0) {
+			throwCool = 20;
+			mx = (int)((float)super.x-mx);
+			my = (int)((float)super.y-my);
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			
+			if (Math.random()>0.05)
+				nukes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(10*mx/temp), (int)(10*my/temp), nukePic, 0.09f));
+			else
+				explosion(x, y);
+		}
 		
 	}
 	
@@ -39,9 +42,12 @@ public class Anand extends Person {
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		
+		if (throwCool > 0)
+			throwCool--;
+		
 		if (keys[32]) {
 			for (int i = 0; i < nukes.size(); i++) {
-				if (Math.random() > 0.2)
+				if (Math.random() > 0.1)
 					explosion(nukes.get(i).x, nukes.get(i).y);
 				nukes.remove(i);
 			}
@@ -75,7 +81,7 @@ public class Anand extends Person {
 	public void explosion(int x, int y) {
 		
 		
-		for (int i = 0; i < Math.random()*20+20; i++) {
+		for (int i = 0; i < Math.random()*20+30; i++) {
 			int mx = (int)((float)(Math.random()*200-100));
 			int my = (int)((float)(Math.random()*200-100));
 			

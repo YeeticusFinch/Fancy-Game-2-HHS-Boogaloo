@@ -14,6 +14,7 @@ public abstract class Enemy {
 	protected int xo;
 	protected int yo;
 	protected PImage icon;
+	protected PImage foxIcon;
 	protected int f1x;
 	protected int f1y;
 	protected int f2x;
@@ -27,6 +28,8 @@ public abstract class Enemy {
 	protected int id;
 	protected int vx;
 	protected int vy;
+	public int fox = 0;
+	protected int maxSpeed;
 	
 	public Enemy() {
 		
@@ -34,6 +37,7 @@ public abstract class Enemy {
 	
 	public Enemy(int speed, int dmg, int hp, int id) {
 		this.speed = speed;
+		maxSpeed = speed;
 		this.dmg = dmg;
 		this.hp = hp;
 		this.id = id;
@@ -70,8 +74,12 @@ public abstract class Enemy {
 			spawn(map, g);
 		}
 		
+		
+		
 		if (icon == null)
 			icon = g.loadImage("images" + FileIO.fileSep + "e" + id + ".png");
+		if (foxIcon == null)
+			foxIcon = g.loadImage("images" + FileIO.fileSep + "fox.png");
 		g.fill(0);
 		
 		hw = g.width*0.06f;
@@ -102,6 +110,21 @@ public abstract class Enemy {
 		if (Math.abs(f2y) > 0) {
 			f2y*=0.8;
 		}
+		
+		if (fox>0) {
+			speed = maxSpeed/3;
+			if (fox>0) {
+				speed = maxSpeed/3;
+				fox--;
+			}
+			else
+				speed = maxSpeed;
+			fox--;
+			g.image(foxIcon, x, y, hw, hh/2);
+		}
+		else
+			speed = maxSpeed;
+		
 		
 	}
 	
