@@ -8,7 +8,7 @@ public class GUI extends PApplet {
 	private String[] charNames = {"Smallboi", "Rocket Man", "Yes Yes Yes Man", "Fancy Boi", "EEEEEEEEEEEEEE"};
 	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing\nLeftClick to pass elbow connector and generate health packs, RightClick to dash, \nSpace+arrowkey to dodge",
 			"Slowmoving with an obsession with nukes, throws mini nukes at people\nLeftClick to throw nuke, Space to detonate nuke",
-			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain\nLeftClick to yell \"Yes Yes Yes\"",
+			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain\nLeftClick to yell \"Yes Yes Yes\", RightClick to place walls",
 			"Medium speed, throws fancy thumbs at a long range\nLeftClick to throw thumb, Space to mount/dismount unicycle",
 			"High speed, shoots really low range electric sparks, but they travel further through walls\nLeftClick to zap, RightClick to throw fox which freezes people"
 	};

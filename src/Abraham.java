@@ -7,7 +7,9 @@ import processing.core.PImage;
 public class Abraham extends Person {
 
 	private ArrayList<Projectile> yeses = new ArrayList<Projectile>();
+	private ArrayList<Projectile> blocks = new ArrayList<Projectile>();
 	private PImage yesPic;
+	private PImage blockPic;
 	int yes = 0;
 	int mx=0;
 	int my=0;
@@ -38,7 +40,13 @@ public class Abraham extends Person {
 	
 	@Override
 	public void attack2(int mx, int my) { //Gives elbow connector
+		mx = (int)((float)super.x-mx);
+		my = (int)((float)super.y-my);
 		
+		double temp = -Math.sqrt(mx*mx + my*my);
+		
+		blocks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), blockPic, 0.05f, "halt"));
+	
 		
 	}
 	
@@ -47,12 +55,26 @@ public class Abraham extends Person {
 		
 		if (yesPic == null)
 			yesPic = g.loadImage("images" + FileIO.fileSep + "yes.png");
+		if (blockPic == null)
+			blockPic = g.loadImage("images" + FileIO.fileSep + "block.png");
 		
 		for (int i = 0; i < yeses.size(); i++) {
 			if (yeses.get(i).t<40)
 				yeses.get(i).draw(g, map);
 			else
 				yeses.remove(i);
+			
+		}
+		for (int i = 0; i < blocks.size(); i++) {
+			if (blocks.get(i).t<10)
+				blocks.get(i).draw(g, map);
+			else {
+				int x = blocks.get(i).x;
+				int y = blocks.get(i).y;
+				map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '1' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
+				
+				blocks.remove(i);
+			}
 			
 		}
 		
@@ -80,6 +102,7 @@ public class Abraham extends Person {
 				}
 			}
 		}
+		
 	}
 	
 }
