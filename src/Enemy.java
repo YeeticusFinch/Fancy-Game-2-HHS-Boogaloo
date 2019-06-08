@@ -70,6 +70,10 @@ public abstract class Enemy {
 	public void draw(PApplet g, boolean[] keys, ArrayList<String> map) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 		g.pushStyle();
 		
+		g.fill(0);
+		g.textSize(g.width*0.01f);
+		g.text("HP: " + hp, x, y-g.width*0.01f);
+		
 		while (x == -1 && y == -1) {
 			spawn(map, g);
 		}

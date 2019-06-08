@@ -4,32 +4,37 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 
-public class Darius extends Enemy {
+public class Garrett extends Enemy {
 
 	boolean rushing = false;
 	
-	ArrayList<Projectile> homework = new ArrayList<Projectile>();
-	PImage[] hwPics = new PImage[4];
+	ArrayList<Projectile> cards = new ArrayList<Projectile>();
+	PImage[] cardPics = new PImage[5];
+	//PImage[] frPics = new PImage[4];
+	int card = 0;
 	
-	public Darius() {
-		super(5, 4, 10, 0); //Speed, Damage, HP
+	public Garrett() {
+		super(5, 6, 17, 2); //Speed, Damage, HP, ID
 		if (Math.random() > 0.5)
 			rushing = true;
 	}
 	
 	public void draw(PApplet g, boolean[] keys, ArrayList<String> map) {
 		super.draw( g, keys, map);
-		if (hwPics[0] == null) {
-			for (int i = 0; i < hwPics.length; i++)
-				hwPics[i] = g.loadImage("images" + FileIO.fileSep + "hw" + i + ".png");
-			System.out.println("Loaded Darius images");
+		if (cardPics[0] == null) {
+			for (int i = 0; i < cardPics.length; i++)
+				cardPics[i] = g.loadImage("images" + FileIO.fileSep + "card" + i + ".png");
+			
+			//System.out.println("Loaded Darius images");
 		}
 		
-		for (int j = 0; j < homework.size(); j++) {
-			if (homework.get(j).t<22)
-				homework.get(j).draw(g, map);
+		System.out.println("Drawing Garrett");
+		
+		for (int j = 0; j < cards.size(); j++) {
+			if (cards.get(j).t<22)
+				cards.get(j).draw(g, map);
 			else
-				homework.remove(j);
+				cards.remove(j);
 			
 		}
 		
@@ -52,11 +57,19 @@ public class Darius extends Enemy {
 		}
 		x+=vx;
 		y+=vy;
-		if (Math.random()>0.992)
+		if (Math.random()>0.99)
 			rushing = !rushing;
 		
-		if (fox < 1 && Math.random() > 0.992)
-			attack(px, py);
+		if (card > 0 ) {
+			if (card%4 == 0) {
+				attack(px+(int)(Math.random()*200-100), py+(int)(Math.random()*200-100));
+			}
+			card--;
+		}
+		
+		if (fox < 1 && Math.random() > 0.99)
+			card = 20+(int)(Math.random()*20);
+		
 	}
 
 	@Override
@@ -67,19 +80,18 @@ public class Darius extends Enemy {
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		homework.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), hwPics[(int)(Math.random()*4)], 0.06f));
+		cards.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), cardPics[(int)(Math.random()*4)], 0.06f));
 		
 		//System.out.println("Throwing hw");
 	}
 
 	@Override
 	public void attack2(int mx, int my) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	public void projectileCollide(PApplet g, Person e) {
-		for (Projectile f : homework) {
+		for (Projectile f : cards) {
 			if (e.hp > 0 && f.collide(e)) {
 				e.hp -= f.size*0.5f;
 				g.pushStyle();
@@ -102,7 +114,7 @@ public class Darius extends Enemy {
 	@Override
 	public void deleteProjectiles() {
 		// TODO Auto-generated method stub
-		homework.clear();
+		cards.clear();
 	}
 
 	

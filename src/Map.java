@@ -41,6 +41,9 @@ public class Map {
 						case 1:
 							GUI.enemies.add(new VonStein());
 							break;
+						case 2:
+							GUI.enemies.add(new Garrett());
+							break;
 					}
 				}
 			}

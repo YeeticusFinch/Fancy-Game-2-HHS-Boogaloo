@@ -95,7 +95,7 @@ public class Claire extends Person {
 		for (Projectile f : foxes) {
 			for (Enemy e : enemies) {
 				if (e.hp > 0 && f.collide(e)) {
-					e.fox = 600;
+					e.fox = 200;
 				}
 			}
 		}

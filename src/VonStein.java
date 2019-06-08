@@ -61,10 +61,10 @@ public class VonStein extends Enemy {
 		if (Math.random()>0.99)
 			rushing = !rushing;
 		
-		if (Math.random() > 0.992)
+		if (fox < 1 && Math.random() > 0.992)
 			attack(px, py);
 		
-		if (Math.random() > 0.995)
+		if (fox < 1 && Math.random() > 0.995)
 			attack2(px, py);
 	}
 
