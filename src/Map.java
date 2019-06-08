@@ -95,7 +95,7 @@ public class Map {
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 					case '5': //Health Pack
-						g.fill(100);
+						g.fill(220);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						g.fill(255);
 						g.rect(g.width*0.05f*j+g.width*0.01f, g.width*0.05f*(i-1)+g.width*0.01f, g.width*0.05f-g.width*0.02f, g.width*0.05f-g.width*0.02f);
