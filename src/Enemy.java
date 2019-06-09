@@ -15,6 +15,7 @@ public abstract class Enemy {
 	protected int yo;
 	protected PImage icon;
 	protected PImage foxIcon;
+	protected PImage slinkyIcon;
 	protected int f1x;
 	protected int f1y;
 	protected int f2x;
@@ -29,6 +30,7 @@ public abstract class Enemy {
 	protected int vx;
 	protected int vy;
 	public int fox = 0;
+	public boolean slinky = false;
 	protected int maxSpeed;
 	protected PImage altIcon = null;
 	
@@ -85,6 +87,8 @@ public abstract class Enemy {
 			icon = g.loadImage("images" + FileIO.fileSep + "e" + id + ".png");
 		if (foxIcon == null)
 			foxIcon = g.loadImage("images" + FileIO.fileSep + "fox.png");
+		if (slinkyIcon == null)
+			slinkyIcon = g.loadImage("images" + FileIO.fileSep + "h0m1.png");
 		g.fill(0);
 		
 		hw = g.width*0.06f;
@@ -128,7 +132,10 @@ public abstract class Enemy {
 			else
 				speed = maxSpeed;
 			fox--;
-			g.image(foxIcon, x, y, hw, hh/2);
+			if (!slinky)
+				g.image(foxIcon, x, y, hw, hh/2);
+			else
+				g.image(slinkyIcon, x, y, hw, hh/2);
 		}
 		else
 			speed = maxSpeed;
@@ -156,7 +163,8 @@ public abstract class Enemy {
 			f2y *= 2*Math.sin(1.5*y);
 		}
 		//g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
-		if (map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f))) == '1') {
+		int fancy = Math.max(Math.min(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.size()-1), 0);
+		if (map.get(fancy).charAt(Math.max(Math.min((int)((x+g.width*0.025f)/(g.width*0.05f)), map.get(fancy).length()-1), 0)) == '1') {
 			x = xo;
 			y = yo;
 		} else {
@@ -164,7 +172,7 @@ public abstract class Enemy {
 			yo = y;
 		}
 		
-		return map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f)));
+		return map.get(fancy).charAt(Math.max(Math.min((int)((x+g.width*0.025f)/(g.width*0.05f)), map.get(fancy).length()-1), 0));
 		
 	}
 	

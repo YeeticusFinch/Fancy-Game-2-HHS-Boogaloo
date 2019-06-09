@@ -4,64 +4,47 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
 
-public class Garrett extends Enemy {
+public class Henry extends Enemy {
 
 	boolean rushing = false;
 	
-	ArrayList<Projectile> cards = new ArrayList<Projectile>();
-	ArrayList<Projectile> darts = new ArrayList<Projectile>();
-	PImage blaster;
-	PImage[] cardPics = new PImage[5];
-	PImage dartPic;
-	//PImage[] frPics = new PImage[4];
-	int card = 0;
-	boolean nerf = false;
+	ArrayList<Projectile> swords = new ArrayList<Projectile>();
+	PImage[] swordPics = new PImage[4];
 	
-	public Garrett() {
-		super(5, 6, 17, 2); //Speed, Damage, HP, ID
+	ArrayList<Projectile> music = new ArrayList<Projectile>();
+	PImage[] musicPics = new PImage[4];
+	
+	public Henry() {
+		super(8, 4, 8, 4); //Speed, Damage, HP
 		if (Math.random() > 0.5)
 			rushing = true;
 	}
 	
 	public void draw(PApplet g, boolean[] keys, ArrayList<String> map) {
 		super.draw( g, keys, map);
-		if (dartPic == null) {
-			dartPic = g.loadImage("images" + FileIO.fileSep + "dart.png");
-		}
-		if (cardPics[0] == null) {
-			for (int i = 0; i < cardPics.length; i++)
-				cardPics[i] = g.loadImage("images" + FileIO.fileSep + "card" + i + ".png");
-			
-			//System.out.println("Loaded Darius images");
-		}
+		if (swordPics[0] == null)
+			for (int i = 0; i < swordPics.length; i++)
+			swordPics[i] = g.loadImage("images" + FileIO.fileSep + "sword" + i + ".png");
 		
-		if (nerf && altIcon == null)
-			altIcon = g.loadImage("images" + FileIO.fileSep + "e2alt.png");
-		else if (!nerf && altIcon != null)
-			altIcon = null;
-		
-		for (int j = 0; j < cards.size(); j++) {
-			if (cards.get(j).t<22)
-				cards.get(j).draw(g, map);
+		for (int j = 0; j < swords.size(); j++) {
+			if (swords.get(j).t<12)
+				swords.get(j).draw(g, map);
 			else
-				cards.remove(j);
+				swords.remove(j);
 			
 		}
-		for (int j = 0; j < darts.size(); j++) {
-			if (darts.get(j).t<30)
-				darts.get(j).draw(g, map);
+		if (musicPics[0] == null)
+			for (int i = 0; i < musicPics.length; i++)
+			musicPics[i] = g.loadImage("images" + FileIO.fileSep + "music" + i + ".png");
+		
+		for (int j = 0; j < music.size(); j++) {
+			if (music.get(j).t<30)
+				music.get(j).draw(g, map);
 			else
-				darts.remove(j);
+				music.remove(j);
 			
 		}
 		
-		if (blaster == null) {
-			blaster = g.loadImage("images" + FileIO.fileSep + "gnerf.png");
-		}
-		
-		if (nerf) {
-			g.image(blaster, x-hw*0.5f, y+hh*0.4f, hw*1.6f, hh*0.8f);
-		}
 	}
 	
 	@Override
@@ -81,22 +64,12 @@ public class Garrett extends Enemy {
 		}
 		x+=vx;
 		y+=vy;
-		if (Math.random()>0.99)
+		if (Math.random()>0.992)
 			rushing = !rushing;
 		
-		if (Math.random() > 0.996)
-			nerf = !nerf;
-		
-		if (card > 0) {
-			if (card%4 == 0) {
-				attack(px+(int)(Math.random()*200-100), py+(int)(Math.random()*200-100));
-			}
-			card--;
-		}
-		
-		if (fox < 1 && Math.random() > 0.99 && !nerf)
-			card = 20+(int)(Math.random()*20);
-		else if (fox < 1 && Math.random() > 0.97 && nerf)
+		if (fox < 1 && Math.random() > 0.99)
+			attack(px, py);
+		if (fox < 1 && Math.random() > 0.993)
 			attack2(px, py);
 	}
 
@@ -108,24 +81,25 @@ public class Garrett extends Enemy {
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		cards.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), cardPics[(int)(Math.random()*4)], 0.06f));
+		swords.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), swordPics[(int)(Math.random()*swordPics.length)], 0.08f));
 		
 		//System.out.println("Throwing hw");
 	}
 
 	@Override
 	public void attack2(int mx, int my) {
+		// TODO Auto-generated method stub
 		mx = (int)((float)super.x-mx);
 		my = (int)((float)super.y-my);
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		darts.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(40*mx/temp), (int)(40*my/temp), dartPic, 0.04f));
+		music.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), musicPics[(int)(Math.random()*musicPics.length)], 0.1f));
 		
 	}
 	
 	public void projectileCollide(PApplet g, Person e) {
-		for (Projectile f : cards) {
+		for (Projectile f : swords) {
 			if (e.hp > 0 && f.collide(e)) {
 				e.hp -= f.size*0.5f;
 				g.pushStyle();
@@ -136,9 +110,9 @@ public class Garrett extends Enemy {
 			}
 			
 		}
-		for (Projectile f : darts) {
+		for (Projectile f : music) {
 			if (e.hp > 0 && f.collide(e)) {
-				e.hp -= f.size*0.6f;
+				e.hp -= f.size*0.2f;
 				g.pushStyle();
 				g.ellipseMode(PConstants.CORNER);
 				g.fill(255, 0, 0);
@@ -159,7 +133,7 @@ public class Garrett extends Enemy {
 	@Override
 	public void deleteProjectiles() {
 		// TODO Auto-generated method stub
-		cards.clear();
+		swords.clear();
 	}
 
 	

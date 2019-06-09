@@ -6,7 +6,7 @@ import processing.core.PImage;
 public class GUI extends PApplet {
 	
 	private String[] charNames = {"Smallboi", "Rocket Man", "Yes Yes Yes Man", "Fancy Boi", "EEEEEEEEEEEEEE"};
-	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing\nLeftClick to pass elbow connector and generate health packs, RightClick to dash, \nSpace+arrowkey to dodge",
+	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing\nLeftClick to pass elbow connector and generate health packs, Space+arrowkey to dodge",
 			"Slowmoving with an obsession with nukes, throws mini nukes at people\nLeftClick to throw nuke, Space to detonate nuke",
 			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain\nLeftClick to yell \"Yes Yes Yes\", RightClick to place walls",
 			"Medium speed, throws fancy thumbs at a long range\nLeftClick to throw thumb, Space to mount/dismount unicycle",
@@ -26,9 +26,9 @@ public class GUI extends PApplet {
 	
 	private final int SELECTION = 0;
 	private final int PLAY = 1;
-	private final int END = 2;
+	private final int DEAD = 2;
 	
-	private int selected = -1;
+	public static int selected = -1;
 	
 	private PImage[] sel = new PImage[5];
 	
@@ -39,6 +39,7 @@ public class GUI extends PApplet {
 			sel[i] = loadImage("images" + System.getProperty("file.separator") + "sel" + i + ".png");
 		}
 		map.loadMap(0);
+		map.setMap(0);
 		
 	}
 	
@@ -47,8 +48,21 @@ public class GUI extends PApplet {
 			drawSelection();
 		} else if (phase == PLAY) {
 			drawPlay();
+		} else if (phase == DEAD) {
+			drawDead();
 		}
 		
+	}
+	
+	
+	public void drawDead() {
+		clear();
+		textAlign(LEFT);
+		textSize(width*0.02f);
+		text("HA, YOU DIED!!!", width*0.01f, height*0.04f);
+		textAlign(CENTER);
+		text("Press SPACE to start from the previous level", width*0.5f, height*0.9f);
+		image(sel[selected], width*0.2f, height*0.2f, width*0.5f, height*0.6f);
 	}
 	
 	public void drawPlay() {
@@ -69,17 +83,29 @@ public class GUI extends PApplet {
 		//System.out.println("player.getX() = " + player.getX() + "player.getY() = " + player.getY());
 		//System.out.println("tx = " + tx);
 		//System.out.println("ty = " + ty);
-				
+			
+		char fancy = player.collide(this, map.getCurrentMap());
+		
 		translate(tx, ty);
 		map.draw(this, tx, ty);
-		if (player.collide(this, map.getCurrentMap()) == '2' && 0 == enemies.size()) {
-			map.loadMap(map.getMap()+1);
-			map.setMap(map.getMap()+1);
+		if (fancy == '2' && 0 == enemies.size()) {
+			if (!map.isLoaded(map.m+1))
+				map.loadMap(map.m+1);
+			map.setMap(map.m+1);
 			player.spawn(map.getCurrentMap(), this);
+		} else if (fancy == ')') {
+			player.mode = 0;
+			player.unlocked = true;
+		} else if (fancy == '!') {
+			player.mode = 1;
+		} else if (fancy == '@') {
+			player.mode = 2;
 		}
 		
 		if (player.hp > 0)
 			player.draw(this, selected, keys, map.getCurrentMap());
+		else
+			phase = DEAD;
 		
 		for (Enemy e : enemies) {
 			if (e.hp > 0) {
@@ -119,7 +145,7 @@ public class GUI extends PApplet {
 			text("Character Chosen: " + charNames[selected] + "\nDescription: " + desc[selected], width*0.01f, height*0.04f);
 			textAlign(CENTER);
 			text("Press SPACE to start\nOr press BACKSPACE to go back", width*0.5f, height*0.9f);
-			image(sel[selected], width*0.2f, height*0.2f, width*0.6f, height*0.6f);
+			image(sel[selected], width*0.2f, height*0.2f, width*0.5f, height*0.6f);
 		}
 		
 	}
@@ -154,6 +180,14 @@ public class GUI extends PApplet {
 		} else if (phase == PLAY) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 			
 			keys[keyCode] = true;
+		} else if (phase == DEAD) {
+			if (keyCode == 32) {
+				enemies.clear();
+				player.hp = player.maxHP;
+				map.setMap(Math.max(map.m-1, 0));
+				player.spawn(map.getCurrentMap(), this);
+				phase = PLAY;
+			}
 		}
 	}
 	

@@ -14,8 +14,28 @@ public class Osman extends Person {
 	
 	private ArrayList<Projectile> hPacks = new ArrayList<Projectile>();
 	
+	private ArrayList<Projectile> bois = new ArrayList<Projectile>();
+	
+	private ArrayList<Projectile> slinkies = new ArrayList<Projectile>();
+	
+	private ArrayList<Projectile> trees = new ArrayList<Projectile>();
+	
+	private ArrayList<Projectile> thumbs = new ArrayList<Projectile>();
+	
+	private PImage slinky;
+	
+	private PImage thumb;
+	
+	private PImage tree;
+	
+	private PImage[] boiPics = new PImage[3];
+	
 	private PImage elbowPic;
 	private PImage hPackPic;
+	
+	boolean dashable = true;
+	int dashCool = 40;
+	int boi = 0;
 	
 	public Osman() {
 		super(8, 7, 15); //Speed, Damage, HP
@@ -35,31 +55,72 @@ public class Osman extends Person {
 		
 	}
 	
-	@Override
-	public void attack2(int mx, int my) { //Gives elbow connector
+	public void dash(int mx, int my) { //Dashes
 		
-		tx = 0.3f*((float)super.x-mx);
-		ty = 0.3f*((float)super.y-my);
+		if (dashCool > 35)
+			dashable = true;
 		
+		if (dashable && dashCool > 0) {
+			tx = 0.3f*((float)super.x-mx);
+			ty = 0.3f*((float)super.y-my);
+			
+			dashCool-=5;
+			
+			if (dashCool < 4)
+				dashable = false;
+			
+			if (mode == 2)
+				thumbExplosion();
+			else if (mode == 1 && Math.random() > 0.5 && dashCool > 20)
+				slinkies.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(Math.random()*10-5), (int)(Math.random()*10-5), slinky, 0.05f, "halt"));
+		}
+		
+	}
+	
+	public void thumbExplosion() {
+		for (int i = 0; i < Math.random()*10+5; i++) {
+			int mx = (int)((float)(Math.random()*200-100));
+			int my = (int)((float)(Math.random()*200-100));
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			thumbs.add(new Projectile((int)(x+this.hw/2), (int)(y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), thumb, (float)Math.random()*0.1f));
+		}
 	}
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		if (keys[32]) {
 			if (keys[PConstants.UP])
-				attack2(x, y-g.width/10);
+				dash(x, y-g.width/10);
 			if (keys[PConstants.DOWN])
-				attack2(x, y+g.width/10);
+				dash(x, y+g.width/10);
 			if (keys[PConstants.LEFT])
-				attack2(x-g.width/10, y);
+				dash(x-g.width/10, y);
 			if (keys[PConstants.RIGHT])
-				attack2(x+g.width/10, y);
+				dash(x+g.width/10, y);
+		}
+		if (dashCool < 40)
+			dashCool++;
+		if (boiPics[0] == null) {
+			
+			boiPics[0] = g.loadImage("images" + FileIO.fileSep + "B.png");
+			boiPics[1] = g.loadImage("images" + FileIO.fileSep + "O.png");
+			boiPics[2] = g.loadImage("images" + FileIO.fileSep + "I.png");
 		}
 		if (elbowPic == null) {
 			elbowPic = g.loadImage("images" + FileIO.fileSep + "elbow.png");
 		}
 		if (hPackPic == null) {
 			hPackPic = g.loadImage("images" + FileIO.fileSep + "hPack.png");
+		}
+		if (slinky == null) {
+			slinky = g.loadImage("images" + FileIO.fileSep + "h0m1.png");
+		}
+		if (tree == null) {
+			tree = g.loadImage("images" + FileIO.fileSep + "h0m2.png");
+		}
+		if (thumb == null) {
+			thumb = g.loadImage("images" + FileIO.fileSep + "thumb.png");
 		}
 		if (Math.abs(tx) > 0 || Math.abs(ty) > 0) {
 			super.x -= tx;
@@ -72,6 +133,30 @@ public class Osman extends Person {
 				ty = 0;
 			hp = oldHP;
 		}	
+		
+		if (boi > 0) {
+			if (boi > 30) {
+				int mx = (int)((float)(Math.random()*200-100));
+				int my = (int)((float)(Math.random()*200-100));
+			
+				double temp = -Math.sqrt(mx*mx + my*my);
+				bois.add(new Projectile((int)(x+this.hw/2), (int)(y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), boiPics[0], (float)Math.random()*0.1f+0.05f, Math.random()>0.7));
+			} else if (boi > 20) {
+				int mx = (int)((float)(Math.random()*200-100));
+				int my = (int)((float)(Math.random()*200-100));
+			
+				double temp = -Math.sqrt(mx*mx + my*my);
+				bois.add(new Projectile((int)(x+this.hw/2), (int)(y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), boiPics[1], (float)Math.random()*0.1f+0.05f, Math.random()>0.7));
+			} else if (boi > 10) {
+				int mx = (int)((float)(Math.random()*200-100));
+				int my = (int)((float)(Math.random()*200-100));
+			
+				double temp = -Math.sqrt(mx*mx + my*my);
+				bois.add(new Projectile((int)(x+this.hw/2), (int)(y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), boiPics[2], (float)Math.random()*0.1f+0.05f, Math.random()>0.7));
+			}
+			boi--;
+		}
+		
 		for (int i = 0; i < elbows.size(); i++) {
 			if (elbows.get(i).t<10)
 				elbows.get(i).draw(g, map);
@@ -79,6 +164,15 @@ public class Osman extends Person {
 				elbows.remove(i);
 			
 		}
+		
+		for (int i = 0; i < bois.size(); i++) {
+			if (bois.get(i).t<10)
+				bois.get(i).draw(g, map);
+			else
+				bois.remove(i);
+			
+		}
+		
 		
 		for (int i = 0; i < hPacks.size(); i++) {
 			if (hPacks.get(i).t<200) {
@@ -91,8 +185,48 @@ public class Osman extends Person {
 			
 		}
 		
+		for (int i = 0; i < slinkies.size(); i++) {
+			if (slinkies.get(i).t<200) {
+				slinkies.get(i).draw(g, map);
+				slinkies.get(i).vx *= 0.98f;
+				slinkies.get(i).vy *= 0.98f;
+			}
+			else
+				slinkies.remove(i);
+			
+		}
+		
+		for (int i = 0; i < thumbs.size(); i++) {
+			if (thumbs.get(i).t<10)
+				thumbs.get(i).draw(g, map);
+			else
+				thumbs.remove(i);
+			
+		}
+		
+		for (Projectile e : trees) {
+			e.draw(g, map);
+		}
+		
+		if (trees.size() > 0 && trees.get(trees.size()-1).t < 2) {
+			int x = trees.get(trees.size()-1).x;
+			int y = trees.get(trees.size()-1).y+(int)((g.width*0.05f));
+			map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '1' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
+			y-=g.width*0.05f;
+			map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '1' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
+			y-=g.width*0.05f;
+			map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '1' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
+			y-=g.width*0.05f;
+			map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '1' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
+		}
+		
 		oldHP = hp;
 		
+	}
+	
+	public void spawn(ArrayList<String> map, PApplet g) {
+		super.spawn(map, g);
+		trees.clear();
 	}
 	
 	public void projectileCollide(PApplet g, ArrayList<Enemy> enemies) {
@@ -117,6 +251,34 @@ public class Osman extends Person {
 			}
 		}
 		
+		for (Projectile f : bois) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					
+					e.hp -= f.size*0.9;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
+		
+		for (Projectile f : thumbs) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					
+					e.hp -= f.size*0.9;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
+		
 		for (int i = 0; i < hPacks.size(); i++) {
 			if (hPacks.get(i).collide(this)) {
 				if (hp < maxHP) {
@@ -132,6 +294,33 @@ public class Osman extends Person {
 				hPacks.remove(i);
 				
 			}
+		}
+		
+		for (Projectile f : slinkies) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.fox = 400;
+					e.slinky = true;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void attack2(int mx, int my) {
+		// TODO Auto-generated method stub
+		if (mode == 0 && unlocked && boi == 0) {
+			boi = 40;
+		} else if (mode == 1) {
+			mx = (int)((float)super.x-mx);
+			my = (int)((float)super.y-my);
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			
+			slinkies.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), slinky, 0.05f, "halt"));
+			
+		} else if (mode == 2) {
+			trees.add(new Projectile(mx, my, 0, 0, tree, 0.25f));
 		}
 	}
 	

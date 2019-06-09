@@ -12,8 +12,9 @@ public class Map {
 	private ArrayList<Integer> maxX = new ArrayList<Integer>();
 	private ArrayList<Integer> maxY = new ArrayList<Integer>();
 	private PImage hPack;
-	private int m;
-
+	public int m;
+	private PImage[] modes = new PImage[3];
+	
 	public void loadMap(int i) {
 		try {
 			map.add(FileIO.reeeeeeeeeeeeeeeeeead("maps" + FileIO.fileSep + "m" + i));
@@ -31,22 +32,7 @@ public class Map {
 					maxX.set(maxX.size() - 1, map.get(map.size() - 1).get(j).length());
 			maxY.add(map.get(map.size() - 1).size());
 			System.out.println("This map is " + maxX.get(maxX.size() - 1) + " by " + maxY.get(maxY.size() - 1));
-			GUI.enemies.clear();
-			for (int j = 0; j < mDet.get(mDet.size()-1).size(); j++) {
-				for (int k = 0; k < mDet.get(mDet.size()-1).get(j); k++) {
-					switch(j) {
-						case 0:
-							GUI.enemies.add(new Darius());
-							break;
-						case 1:
-							GUI.enemies.add(new VonStein());
-							break;
-						case 2:
-							GUI.enemies.add(new Garrett());
-							break;
-					}
-				}
-			}
+			
 			
 		} catch (IOException e) {
 			System.out.println("Ruh Roh");
@@ -104,6 +90,27 @@ public class Map {
 						g.rect(g.width*0.05f*j+g.width*0.01f, g.width*0.05f*(i-1)+g.width*0.01f, g.width*0.05f-g.width*0.02f, g.width*0.05f-g.width*0.02f);
 						g.image(hPack, g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
+					case ')': //Mode 0 upgrade
+						g.fill(255, 255, 0);
+						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						if (modes[0] == null)
+							modes[0] = g.loadImage("images" + FileIO.fileSep + "h" + GUI.selected + "m0.png");
+						g.image(modes[0], g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						break;
+					case '!': //Mode 1 upgrade
+						g.fill(255, 255, 0);
+						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						if (modes[1] == null)
+							modes[1] = g.loadImage("images" + FileIO.fileSep + "h" + GUI.selected + "m1.png");
+						g.image(modes[1], g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						break;
+					case '@': //Mode 2 upgrade
+						g.fill(255, 255, 0);
+						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						if (modes[2] == null)
+							modes[2] = g.loadImage("images" + FileIO.fileSep + "h" + GUI.selected + "m2.png");
+						g.image(modes[2], g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
+						break;
 				}
 			}
 		}
@@ -121,9 +128,35 @@ public class Map {
 	public int getMap() {
 		return m;
 	}
+	
+	public boolean isLoaded(int m) {
+		return (m < map.size());
+	}
 
 	public void setMap(int m) {
 		this.m = m;
+		GUI.enemies.clear();
+		for (int j = 0; j < mDet.get(m).size(); j++) {
+			for (int k = 0; k < mDet.get(m).get(j); k++) {
+				switch(j) {
+					case 0:
+						GUI.enemies.add(new Darius());
+						break;
+					case 1:
+						GUI.enemies.add(new VonStein());
+						break;
+					case 2:
+						GUI.enemies.add(new Garrett());
+						break;
+					case 3:
+						GUI.enemies.add(new Joe());
+						break;
+					case 4:
+						GUI.enemies.add(new Henry());
+						break;
+				}
+			}
+		}
 	}
 
 }

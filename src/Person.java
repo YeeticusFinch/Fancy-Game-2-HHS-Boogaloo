@@ -15,6 +15,7 @@ public abstract class Person {
 	protected int xo;
 	protected int yo;
 	protected PImage icon;
+	protected PImage altIcon;
 	protected int f1x;
 	protected int f1y;
 	protected int f2x;
@@ -25,6 +26,8 @@ public abstract class Person {
 	protected int h2y;
 	protected float hw;
 	protected float hh;
+	public int mode = 0;
+	public boolean unlocked = false;
 	
 	public Person() {
 		
@@ -78,7 +81,10 @@ public abstract class Person {
 		g.ellipse(x+g.width*0.01f+h1x, y+g.width*0.065f+h1y, g.width*0.005f, g.width*0.005f); //HANDS
 		g.ellipse(x+g.width*0.05f+h2x, y+g.width*0.065f+h2y, g.width*0.005f, g.width*0.005f);
 		
-		g.image(icon, x, y, g.width*0.06f, g.width*0.06f);
+		if (altIcon == null)
+			g.image(icon, x, y, g.width*0.06f, g.width*0.06f);
+		else
+			g.image(altIcon, x, y, g.width*0.06f, g.width*0.06f);
 		
 		if (keys[g.UP])
 			y-=g.width*0.001*speed;
@@ -125,11 +131,12 @@ public abstract class Person {
 			f2y *= 2*Math.sin(1.5*y);
 		}
 		//g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
-		char fancy = map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f)));
-		if (fancy == '1') {
+		int fancy = Math.max(Math.min(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.size()-1), 0);
+		char fancyChar = map.get(fancy).charAt(Math.max(Math.min((int)((x+g.width*0.025f)/(g.width*0.05f)),map.get(fancy).length()), 0));
+		if (fancyChar == '1') {
 			x = xo;
 			y = yo;
-		} else if (fancy == '5') {
+		} else if (fancyChar == '5') {
 			if (hp < maxHP) {
 				map.set(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(0, (int)((x+g.width*0.025f)/(g.width*0.05f))) + '0' + map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).substring(1+(int)((x+g.width*0.025f)/(g.width*0.05f))));
 				hp = Math.min(hp+maxHP/2, maxHP);
