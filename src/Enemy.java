@@ -30,6 +30,7 @@ public abstract class Enemy {
 	protected int vy;
 	public int fox = 0;
 	protected int maxSpeed;
+	protected PImage altIcon = null;
 	
 	public Enemy() {
 		
@@ -98,7 +99,10 @@ public abstract class Enemy {
 		g.ellipse(x+g.width*0.01f+h1x, y+g.width*0.065f+h1y, g.width*0.005f, g.width*0.005f); //HANDS
 		g.ellipse(x+g.width*0.05f+h2x, y+g.width*0.065f+h2y, g.width*0.005f, g.width*0.005f);
 		
-		g.image(icon, x, y, g.width*0.06f, g.width*0.06f);
+		if (altIcon == null)
+			g.image(icon, x, y, g.width*0.06f, g.width*0.06f);
+		else
+			g.image(altIcon, x, y, g.width*0.06f, g.width*0.06f);
 		
 		g.popStyle();
 		
