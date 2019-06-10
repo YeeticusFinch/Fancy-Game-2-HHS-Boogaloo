@@ -31,8 +31,11 @@ public abstract class Enemy {
 	protected int vy;
 	public int fox = 0;
 	public boolean slinky = false;
+	public boolean glass = false;
 	protected int maxSpeed;
 	protected PImage altIcon = null;
+	public int ox = 0, oy = 0;
+	public int blinded = 0;
 	
 	public Enemy() {
 		
@@ -123,6 +126,16 @@ public abstract class Enemy {
 			f2y*=0.8;
 		}
 		
+		if (blinded > 0) {
+			blinded--;
+			ox = x +(int)( Math.random()*200-100);
+			oy = y +(int)( Math.random()*200-100);
+			g.text("BLINDED", x, y);
+		} else {
+			ox = 0;
+			oy = 0;
+		}
+		
 		if (fox>0) {
 			speed = maxSpeed/3;
 			if (fox>0) {
@@ -132,13 +145,23 @@ public abstract class Enemy {
 			else
 				speed = maxSpeed;
 			fox--;
-			if (!slinky)
+			if (glass) {
+				g.pushStyle();
+				g.textSize(g.width*0.03f);
+				g.fill(255, 0, 0);
+				g.text("OW", x+g.width*0.04f*(float)Math.random()-0.02f, y+g.width*0.04f*(float)Math.random()-0.02f);
+				g.popStyle();
+			}
+			else if (!slinky)
 				g.image(foxIcon, x, y, hw, hh/2);
 			else
 				g.image(slinkyIcon, x, y, hw, hh/2);
 		}
-		else
+		else {
 			speed = maxSpeed;
+			glass = false;
+			slinky = false;
+		}
 		
 		
 	}

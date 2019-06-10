@@ -14,6 +14,7 @@ public class Map {
 	private PImage hPack;
 	public int m;
 	private PImage[] modes = new PImage[3];
+	public static boolean vr = false;
 	
 	public void loadMap(int i) {
 		try {
@@ -59,13 +60,23 @@ public class Map {
 		g.pushStyle();
 		for (int i = 1; i < map.get(m).size(); i++) {
 			for (int j = 0; j < map.get(m).get(i).length(); j++) {
+				g.stroke(0);
 				switch ((char)map.get(m).get(i).charAt(j)) {
 					case '0': //Empty
-						g.fill(220);
+						if (vr) {
+							g.fill(0);
+							g.stroke(100, 50, 0);
+						}
+						else
+							g.fill(220);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 					case '1': //Wall
-						g.fill(100);
+						if (vr) {
+							g.noFill();
+							g.stroke(255, 100, 10);
+						} else
+							g.fill(100);
 						g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 						break;
 					case '2': //Door to next map

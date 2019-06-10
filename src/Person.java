@@ -7,6 +7,7 @@ import processing.core.PImage;
 public abstract class Person {
 	
 	protected int speed;
+	protected int maxSpeed;
 	protected int dmg;
 	protected int hp;
 	protected int maxHP;
@@ -28,6 +29,7 @@ public abstract class Person {
 	protected float hh;
 	public int mode = 0;
 	public boolean unlocked = false;
+	protected float modX = 1, modY = 1;
 	
 	public Person() {
 		
@@ -38,6 +40,7 @@ public abstract class Person {
 		this.dmg = dmg;
 		this.hp = hp;
 		maxHP = hp;
+		maxSpeed = speed;
 	}
 	
 	public int getX() {
@@ -87,13 +90,17 @@ public abstract class Person {
 			g.image(altIcon, x, y, g.width*0.06f, g.width*0.06f);
 		
 		if (keys[g.UP])
-			y-=g.width*0.001*speed;
+			y-=g.width*0.001*speed*modY;
 		if (keys[g.DOWN])
-			y+=g.width*0.001*speed;
+			y+=g.width*0.001*speed*modY;
 		if (keys[g.LEFT])
-			x-=g.width*0.001*speed;
+			x-=g.width*0.001*speed*modX;
 		if (keys[g.RIGHT])
-			x+=g.width*0.001*speed;
+			x+=g.width*0.001*speed*modX;
+		if ((modX != 1 && modY != 1) && (keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT])) {
+			y+=speed*(modY-0.5f);
+			x+=speed*(modX-0.5f);
+		}
 		g.popStyle();
 		
 		if (Math.abs(f1x) > 0) {

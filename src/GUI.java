@@ -5,12 +5,13 @@ import processing.core.PImage;
 
 public class GUI extends PApplet {
 	
-	private String[] charNames = {"Smallboi", "Rocket Man", "Yes Yes Yes Man", "Fancy Boi", "EEEEEEEEEEEEEE"};
+	private String[] charNames = {"Smallboi", "Rocket Man", "Yes Yes Yes Man", "Fancy Boi", "EEEEEEEEEEEEEE", "Glasses Geek"};
 	private String[] desc = {"Very small and fast, passes people elbow connectors with or without them noticing\nLeftClick to pass elbow connector and generate health packs, Space+arrowkey to dodge",
 			"Slowmoving with an obsession with nukes, throws mini nukes at people\nLeftClick to throw nuke, Space to detonate nuke",
 			"Medium speed, yells \"Yes Yes Yes\" at people, destroys terrain\nLeftClick to yell \"Yes Yes Yes\", RightClick to place walls",
 			"Medium speed, throws fancy thumbs at a long range\nLeftClick to throw thumb, Space to mount/dismount unicycle",
-			"High speed, shoots really low range electric sparks, but they travel further through walls\nLeftClick to zap, RightClick to throw fox which freezes people"
+			"High speed, shoots really low range electric sparks, but they travel further through walls\nLeftClick to zap, RightClick to throw fox which freezes people",
+			"Can move fast if he's late for the bus, tosses computer parts that he doesn't need,\nglasses, and oranges because why not\nLeftClick to toss comp part, Right click to toss glasses"
 	};
 	
 	Map map = new Map();
@@ -21,8 +22,9 @@ public class GUI extends PApplet {
 	
 	private Person player;
 	
-	private float tx = 0;
-	private float ty = 0;
+	public static float tx = 0;
+	public static float ty = 0;
+	public static float zoom = 1;
 	
 	private final int SELECTION = 0;
 	private final int PLAY = 1;
@@ -30,7 +32,7 @@ public class GUI extends PApplet {
 	
 	public static int selected = -1;
 	
-	private PImage[] sel = new PImage[5];
+	private PImage[] sel = new PImage[6];
 	
 	private int phase = 0;
 	
@@ -67,6 +69,7 @@ public class GUI extends PApplet {
 	
 	public void drawPlay() {
 		clear();
+		scale(zoom);
 		if(player.getX() >= width*0.5f && player.getX() <= map.maxX()*width*0.05f-width*0.5f)
 			tx= -player.getX()+width*0.5f;
 		else if(player.getX() < width*0.5f)
@@ -110,7 +113,17 @@ public class GUI extends PApplet {
 		for (Enemy e : enemies) {
 			if (e.hp > 0) {
 				e.draw(this, keys, map.getCurrentMap());
-				e.move(player.getX(), player.getY());
+				if (Map.vr) {
+					pushStyle();
+					noFill();
+					stroke(255, 100, 10);
+					rect(e.x, e.y, e.hw, e.hh);
+					popStyle();
+				}
+				if (e.ox == 0 && e.oy == 0)
+					e.move(player.getX(), player.getY());
+				else
+					e.move(e.ox, e.oy);
 				e.collide(this, map.getCurrentMap());
 			} else {
 				e.deleteProjectiles();
@@ -137,8 +150,11 @@ public class GUI extends PApplet {
 			textAlign(LEFT);
 			textSize(width*0.02f);
 			text("Choose your character", width*0.01f, height*0.04f);
-			for (int i = 0; i < sel.length; i++)
-				image(sel[i], width*0.2f*i, height*0.3f, width*0.2f, width*0.2f);
+			
+			for (int i = 0; i < Math.min(sel.length, 6); i++)
+				image(sel[i], width*0.2f*i, 1*height*0.25f, width*0.2f, width*0.2f);
+			for (int i = 5; i < Math.min(sel.length, 12); i++)
+				image(sel[i], width*0.2f*(i-5), 2*height*0.3f, width*0.2f, width*0.2f);
 		} else {
 			textAlign(LEFT);
 			textSize(width*0.02f);
@@ -171,6 +187,9 @@ public class GUI extends PApplet {
 					case 4:
 						player = new Claire();
 						break;
+					case 5:
+						player = new Anton();
+						break;
 				}
 				player.setLoc((int)(width*0.2), (int)(height*0.2));
 				player.spawn(map.getCurrentMap(), this);
@@ -201,7 +220,11 @@ public class GUI extends PApplet {
 		if (phase == SELECTION) {
 			if (mouseButton == LEFT) {
 				for (int i = 0; i < sel.length; i++) {
-					if (mouseX > width*0.2f*i && mouseX < width*0.2f*i+width*0.2f && mouseY > height*0.3f && mouseY < height*0.3f+width*0.2f) {
+					if (mouseX > width*0.2f*i && mouseX < width*0.2f*i+width*0.2f && mouseY > height*0.25f && mouseY < height*0.25f+width*0.2f) {
+						selected = i;
+						System.out.println("Selected " + i);
+						//phase = 1;
+					} else if (mouseX > width*0.2f*(i-5) && mouseX < width*0.2f*i+width*0.2f && mouseY > height*0.6f && mouseY < height*0.6f+width*0.2f) {
 						selected = i;
 						System.out.println("Selected " + i);
 						//phase = 1;

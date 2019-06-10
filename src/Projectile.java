@@ -12,6 +12,7 @@ public class Projectile {
 	boolean penetration = false;
 	boolean ghost = false;
 	boolean halt = false;
+	int blinding;
 	public Projectile(int x, int y, int vx, int vy, PImage pic, float size) {
 		this.x = x;
 		this.y = y;
@@ -42,9 +43,19 @@ public class Projectile {
 			ghost = true;
 		else if (special.equalsIgnoreCase("halt"))
 			halt = true;
+		else if (special.substring(0, 3).equals("led"))
+			blinding = Integer.parseInt(special.substring(special.indexOf(":")+1));
 	}
 	
 	public void draw(PApplet g, ArrayList<String> map) {
+		if (blinding > 0 && Math.random()>0.3f) {
+			g.pushStyle();
+			g.ellipseMode(g.RADIUS);
+			g.noStroke();
+			g.fill((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255));
+			g.ellipse(x,  y, blinding, blinding);
+			g.popStyle();
+		}
 		g.image(pic, x-g.width*size*0.5f, y-g.width*size*0.5f, g.width*size, g.width*size);
 		x+=vx;
 		y+=vy;
@@ -55,8 +66,8 @@ public class Projectile {
 				if (ghost) {
 					t = 0;
 				} else if (halt) {
-					x+=vx;
-					y+=vy;
+					x-=vx;
+					y-=vy;
 					vx = 0;
 					vy = 0;
 				}
@@ -83,7 +94,9 @@ public class Projectile {
 	}
 	
 	public boolean collide(Enemy other) {
-		
+		if (blinding > 0 && Math.sqrt((other.x-x)*(other.x-x)+(other.y-y)*(other.y-y)) < blinding) {
+			other.blinded = blinding;
+		}
 		return collide(other.getX(), other.getY(), other.hw, other.hh);
 	}
 }

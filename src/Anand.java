@@ -12,6 +12,7 @@ public class Anand extends Person {
 	private PImage nukePic;
 	private PImage firePic;
 	private PImage dronePic;
+	private PImage ironPic;
 	int explosions = 0;
 	int throwCool = 0;
 	int ex, ey;
@@ -88,6 +89,12 @@ public class Anand extends Person {
 			nukePic = g.loadImage("images" + FileIO.fileSep + "nuke.png");
 		if (firePic == null)
 			firePic = g.loadImage("images" + FileIO.fileSep + "fire.png");
+		if (ironPic == null)
+			ironPic = g.loadImage("images" + FileIO.fileSep + "h1m1.png");
+		
+		if (keys[16] && mode == 1) {
+			keys[16] = false;
+		}
 		
 		for (int i = 0; i < nukes.size(); i++) {
 			if (nukes.get(i).t<70)
