@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
@@ -9,6 +10,7 @@ public class Anand extends Person {
 	private ArrayList<Projectile> nukes = new ArrayList<Projectile>();
 	private ArrayList<Projectile> drones = new ArrayList<Projectile>();
 	private ArrayList<Projectile> fire = new ArrayList<Projectile>();
+	private ArrayList<Laser> laser = new ArrayList<Laser>();
 	private PImage nukePic;
 	private PImage firePic;
 	private PImage dronePic;
@@ -16,6 +18,7 @@ public class Anand extends Person {
 	int explosions = 0;
 	int throwCool = 0;
 	int ex, ey;
+	boolean ironman;
 	
 	public Anand() {
 		super(3, 4, 20); //Speed, Damage, HP
@@ -51,6 +54,8 @@ public class Anand extends Person {
 			
 			double temp = -Math.sqrt(mx*mx + my*my);
 			drones.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(15*mx/temp), (int)(15*my/temp), dronePic, 0.09f));
+		} else if (ironman && mode == 1) {
+			laser.add(new Laser((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), mx, my, new Color(100, 100, 255), 10, 50));
 		}
 	}
 	
@@ -94,6 +99,19 @@ public class Anand extends Person {
 		
 		if (keys[16] && mode == 1) {
 			keys[16] = false;
+			ironman = !ironman;
+		}
+		
+		if (ironman) {
+			altIcon = ironPic;
+			altColor = new Color(100, 10, 10);
+			if (!Map.vr)
+				Map.vr = true;
+		} else if (altIcon != null) {
+			if (Map.vr)
+				Map.vr = false;
+			altIcon = null;
+			altColor = null;
 		}
 		
 		for (int i = 0; i < nukes.size(); i++) {
@@ -117,6 +135,14 @@ public class Anand extends Person {
 				drones.get(i).draw(g, map);
 			else
 				drones.remove(i);
+			
+		}
+		
+		for (int i = 0; i < laser.size(); i++) {
+			if (laser.get(i).t<laser.get(i).ttl)
+				laser.get(i).draw(g, map);
+			else
+				laser.remove(i);
 			
 		}
 		
@@ -164,8 +190,20 @@ public class Anand extends Person {
 				}
 			}
 		}
+		for (Laser f : laser) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size*0.2f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
 		for (Projectile f : fire) {
-			if (f.collide(this) && ((!unlocked && Math.random()>0.6f) || (unlocked && Math.random()>0.8f))) {
+			if (!ironman && f.collide(this) && ((!unlocked && Math.random()>0.6f) || (unlocked && Math.random()>0.8f))) {
 				hp -= 1;
 				g.pushStyle();
 				g.ellipseMode(PConstants.CORNER);

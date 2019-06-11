@@ -31,6 +31,8 @@ public abstract class Person {
 	public boolean unlocked = false;
 	protected float modX = 1, modY = 1;
 	
+	protected java.awt.Color altColor;
+	
 	public Person() {
 		
 	}
@@ -70,8 +72,10 @@ public abstract class Person {
 		
 		if (icon == null)
 			icon = g.loadImage("images" + FileIO.fileSep + "h" + id + ".png");
-		g.fill(0);
-		
+		if (altColor == null)
+			g.fill(0);
+		else 
+			g.fill(altColor.getRed(), altColor.getGreen(), altColor.getBlue());
 		hw = g.width*0.06f;
 		hh = g.width*0.09f;
 		
