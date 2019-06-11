@@ -110,7 +110,10 @@ public class Anton extends Person {
 			if (dashCool < 4)
 				dashable = false;
 			
-			mathExplosion();
+			if (mode == 1 && dashCool > 32)
+				oranges.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(dx*0.5f), (int)(dy*0.5f), orange, 0.06f, "halt"));
+			else if (mode == 2)
+				mathExplosion();
 		}
 		
 	}
@@ -185,7 +188,7 @@ public class Anton extends Person {
 		
 		super.draw( g,  id, keys, map);
 		
-		if (mode == 2 && keys[32]) {
+		if ((mode == 1 || mode == 2) && keys[32]) {
 			if (keys[PConstants.UP])
 				dash(x, y-g.width/10);
 			if (keys[PConstants.DOWN])
@@ -323,9 +326,6 @@ public class Anton extends Person {
 				if (e.hp > 0 && Math.sqrt((e.x-f.x)*(e.x-f.x)+(e.y-f.y)*(e.y-f.y)) < hw*5) {
 					e.ox = f.x;
 					e.oy = f.y;
-				} else {
-					e.ox = 0;
-					e.oy = 0;
 				}
 			}
 		}

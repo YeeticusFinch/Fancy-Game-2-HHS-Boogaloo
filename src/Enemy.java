@@ -126,14 +126,15 @@ public abstract class Enemy {
 			f2y*=0.8;
 		}
 		
-		if (blinded > 0) {
+		if (blinded > 1) {
 			blinded--;
 			ox = x +(int)( Math.random()*200-100);
 			oy = y +(int)( Math.random()*200-100);
 			g.text("BLINDED", x, y);
-		} else {
+		} else if (blinded > 0){
 			ox = 0;
 			oy = 0;
+			blinded--;
 		}
 		
 		if (fox>0) {

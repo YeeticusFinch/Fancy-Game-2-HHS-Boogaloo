@@ -122,8 +122,10 @@ public class GUI extends PApplet {
 				}
 				if (e.ox == 0 && e.oy == 0)
 					e.move(player.getX(), player.getY());
-				else
+				else {
 					e.move(e.ox, e.oy);
+					System.out.println("yoink");
+				}
 				e.collide(this, map.getCurrentMap());
 			} else {
 				e.deleteProjectiles();
