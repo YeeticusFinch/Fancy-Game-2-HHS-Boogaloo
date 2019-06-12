@@ -1,10 +1,10 @@
 # HHS RPG
 
 Controls:
-Arrow keys to move (WASD litterally doesn't work on my computer, idk why)
+Arrow keys to move (WASD literally doesn't work on my computer, idk why)
 Left click to use main attack
-Right click to use ability
-In the futur characters may be able to use unlockable abilities with different keyboard buttons
+Right click to use abilities / secondary attack
+Some abilities are activated by the spacebar
 
 Maps:
 Here is an example of a map:
@@ -25,7 +25,7 @@ Here is an example of a map:
 11111111111111111111111111111
 
 The first line has the map name (gets displayed in top left corner of game) and it has the enemies in this format:
-enemyType:amount
+enemyID:amount
 So for this map there is one type 0 enemy, which will spawn in a random spot.
 
 Here is the key:
@@ -66,3 +66,4 @@ Finally go into the map class and add your new enemy to the switch statement und
 If you want to create a new playable character, the steps are very similar to those of the enemies, but you are going to need to program 3 power ups.
 For each power up icon, upload it under the name “h”+PlayerID+“m”+PowerUpId+”.png” (ex: “h3m0” is carl’s Unicycle)
 Whenever the player steps on a power up, their “protected int mode” field automatically be set to the number corresponding to the power up ID.
+Players can also use the projectile class and the Laser class
