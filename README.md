@@ -33,3 +33,14 @@ Here is the key:
 1 -> wall
 2 -> door to next map
 3 -> player spawn point
+4 -> enemy spawn point
+5 -> health pack
+
+You do not need to edit code to add a map.
+
+If you want to add a cutscene, put “!!!” in the first line, your message in the second, and the image name (with file extension but not the path) on the third line.
+
+If you want to add an enemy, follow these steps:
+It’s easiest to just copy paste an existing enemy.
+
+In the constructor, put “super(speed, damage, hp, ID)
