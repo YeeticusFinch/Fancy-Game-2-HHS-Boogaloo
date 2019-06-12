@@ -68,81 +68,93 @@ public class GUI extends PApplet {
 	}
 	
 	public void drawPlay() {
-		clear();
-		scale(zoom);
-		if(player.getX() >= width*0.5f && player.getX() <= map.maxX()*width*0.05f-width*0.5f)
-			tx= -player.getX()+width*0.5f;
-		else if(player.getX() < width*0.5f)
-			tx = 0;
-		else if (player.getX() > map.maxX()*width*0.05f-width*0.5f)
-			tx = -(map.maxX()*width*0.05f-width);
-		
-		if(player.getY() >= height*0.5f && player.getY() <= (map.maxY()-1)*width*0.05f-height*0.5f)
-			ty= -player.getY()+height*0.5f;
-		else if(player.getY() < height*0.5f)//ahem osman
-			ty = 0;
-		else if(player.getY() > (map.maxY()-1)*width*0.05f-height*0.5f)
-			ty = -((map.maxY()-1)*width*0.05f-height);
-		//System.out.println("player.getX() = " + player.getX() + "player.getY() = " + player.getY());
-		//System.out.println("tx = " + tx);
-		//System.out.println("ty = " + ty);
+		if (map.noPerson) {
+			map.draw(this, tx, ty);
+			if (keys[32]) {
+				keys[32] = false;
+				if (!map.isLoaded(map.m+1))
+					map.loadMap(map.m+1);
+				map.setMap(map.m+1);
+				player.spawn(map.getCurrentMap(), this);
+			}
+		}
+		else {
+			clear();
+			scale(zoom);
+			if(player.getX() >= width*0.5f && player.getX() <= map.maxX()*width*0.05f-width*0.5f)
+				tx= -player.getX()+width*0.5f;
+			else if(player.getX() < width*0.5f)
+				tx = 0;
+			else if (player.getX() > map.maxX()*width*0.05f-width*0.5f)
+				tx = -(map.maxX()*width*0.05f-width);
 			
-		char fancy = player.collide(this, map.getCurrentMap());
-		
-		translate(tx, ty);
-		map.draw(this, tx, ty);
-		if (fancy == '2' && 0 == enemies.size()) {
-			if (!map.isLoaded(map.m+1))
-				map.loadMap(map.m+1);
-			map.setMap(map.m+1);
-			player.spawn(map.getCurrentMap(), this);
-		} else if (fancy == ')') {
-			player.mode = 0;
-			player.unlocked = true;
-		} else if (fancy == '!') {
-			player.mode = 1;
-		} else if (fancy == '@') {
-			player.mode = 2;
-		}
-		
-		if (player.hp > 0)
-			player.draw(this, selected, keys, map.getCurrentMap());
-		else
-			phase = DEAD;
-		
-		for (Enemy e : enemies) {
-			if (e.hp > 0) {
-				e.draw(this, keys, map.getCurrentMap());
-				if (Map.vr) {
-					pushStyle();
-					fill(0);
-					stroke(255, 100, 10);
-					rect(e.x, e.y, e.hw, e.hh);
-					popStyle();
-				}
-				if (e.ox == 0 && e.oy == 0)
-					e.move(player.getX(), player.getY());
-				else {
-					e.move(e.ox, e.oy);
-					System.out.println("yoink");
-				}
-				e.collide(this, map.getCurrentMap());
-			} else {
-				e.deleteProjectiles();
+			if(player.getY() >= height*0.5f && player.getY() <= (map.maxY()-1)*width*0.05f-height*0.5f)
+				ty= -player.getY()+height*0.5f;
+			else if(player.getY() < height*0.5f)//ahem osman
+				ty = 0;
+			else if(player.getY() > (map.maxY()-1)*width*0.05f-height*0.5f)
+				ty = -((map.maxY()-1)*width*0.05f-height);
+			//System.out.println("player.getX() = " + player.getX() + "player.getY() = " + player.getY());
+			//System.out.println("tx = " + tx);
+			//System.out.println("ty = " + ty);
+				
+			char fancy = player.collide(this, map.getCurrentMap());
+			
+			translate(tx, ty);
+			map.draw(this, tx, ty);
+			if (fancy == '2' && 0 == enemies.size()) {
+				if (!map.isLoaded(map.m+1))
+					map.loadMap(map.m+1);
+				map.setMap(map.m+1);
+				player.spawn(map.getCurrentMap(), this);
+			} else if (fancy == ')') {
+				player.mode = 0;
+				player.unlocked = true;
+			} else if (fancy == '!') {
+				player.mode = 1;
+			} else if (fancy == '@') {
+				player.mode = 2;
 			}
-			e.projectileCollide(this, player);
-		}
-		
-		for (int i = 0; i < enemies.size(); i++) {
-			if (enemies.get(i).hp <=0) {
-				enemies.remove(i);
+			
+			if (player.hp > 0)
+				player.draw(this, selected, keys, map.getCurrentMap());
+			else
+				phase = DEAD;
+			
+			for (Enemy e : enemies) {
+				if (e.hp > 0) {
+					e.draw(this, keys, map.getCurrentMap());
+					if (Map.vr) {
+						pushStyle();
+						fill(0);
+						stroke(255, 100, 10);
+						rect(e.x, e.y, e.hw, e.hh);
+						popStyle();
+					}
+					if (e.ox == 0 && e.oy == 0)
+						e.move(player.getX(), player.getY());
+					else {
+						e.move(e.ox, e.oy);
+						System.out.println("yoink");
+					}
+					e.collide(this, map.getCurrentMap());
+				} else {
+					e.deleteProjectiles();
+				}
+				e.projectileCollide(this, player);
 			}
+			
+			for (int i = 0; i < enemies.size(); i++) {
+				if (enemies.get(i).hp <=0) {
+					enemies.remove(i);
+				}
+			}
+			player.projectileCollide(this, enemies);
+			textAlign(LEFT);
+			translate(-tx, -ty);
+			text("HP: " + player.hp, width*0.2f, height*0.03f);
+			//text("YEET", mouseX-tx, mouseY-ty);
 		}
-		player.projectileCollide(this, enemies);
-		textAlign(LEFT);
-		translate(-tx, -ty);
-		text("HP: " + player.hp, width*0.2f, height*0.03f);
-		//text("YEET", mouseX-tx, mouseY-ty);
 	}
 	
 	public void drawSelection() {

@@ -67,7 +67,7 @@ public abstract class Enemy {
 				if (map.get(i).charAt(j) == '4' && Math.random()>0.6) {
 					x = (int)(g.width*0.05f*(j));
 					y = (int)(g.width*0.05f*(i-1.5f));
-					System.out.println("Placing at spawnpoint " + x + ", " + y);
+					System.out.println("Placing " + this.getClass() + " at spawnpoint " + x + ", " + y);
 					xo = x;
 					yo = y;
 				}
