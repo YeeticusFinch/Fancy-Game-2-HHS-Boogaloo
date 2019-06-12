@@ -12,13 +12,17 @@ public class Claire extends Person {
 	private ArrayList<Projectile> foxes = new ArrayList<Projectile>();
 	private ArrayList<Projectile> disks = new ArrayList<Projectile>();
 	private ArrayList<Projectile> eGren = new ArrayList<Projectile>();
+	private ArrayList<Projectile> hDrives = new ArrayList<Projectile>();
 	private ArrayList<Laser> laser = new ArrayList<Laser>();
 	private PImage[] sparkPic = new PImage[7];
+	private PImage hardDrive;
 	private PImage fox;
 	private PImage disk;
 	private int mx = 0;
 	private int spark = 0;
 	private int my = 0;
+	private int hdc = 0;
+	private int foxC = 0;
 	
 	public Claire() {
 		super(6, 9, 16); //Speed, Damage, HP
@@ -41,8 +45,13 @@ public class Claire extends Person {
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		foxes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), fox, 0.1f));
-	
+		if (unlocked && mode == 0 && hdc == 0) {
+			hdc = 15;
+			hDrives.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), hardDrive, 0.05f));
+		} else if (foxC == 0){
+			foxC = 15;
+			foxes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), fox, 0.1f));
+		}
 	}
 	
 	public void spark(int mx, int my) {
@@ -59,10 +68,16 @@ public class Claire extends Person {
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
+		if (hdc > 0)
+			hdc--;
+		if (foxC > 0)
+			foxC--;
 		if (disk == null)
 			disk = g.loadImage("images" + FileIO.fileSep+"disk.png");
 		if (fox == null)
 			fox = g.loadImage("images"+FileIO.fileSep + "fox.png");
+		if (hardDrive == null)
+			hardDrive = g.loadImage("images"+FileIO.fileSep+"cp0.png");
 		if (sparkPic[0] == null)
 			for (int i = 0; i < sparkPic.length; i++)
 				sparkPic[i] = g.loadImage("images" + FileIO.fileSep + "s" + i + ".png");
@@ -100,6 +115,13 @@ public class Claire extends Person {
 				eGren.get(i).draw(g, map);
 			else
 				eGren.remove(i);
+			
+		}
+		for (int i = 0; i < hDrives.size(); i++) {
+			if (hDrives.get(i).t<30)
+				hDrives.get(i).draw(g, map);
+			else
+				hDrives.remove(i);
 			
 		}
 		for (int i = 0; i < disks.size(); i++) {
@@ -172,6 +194,18 @@ public class Claire extends Person {
 					g.popStyle();
 					if (mode == 1 && e.blinded > 0)
 						hp=Math.min(hp+1, maxHP);
+				}
+			}
+		}
+		for (Projectile f : hDrives) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
 				}
 			}
 		}
