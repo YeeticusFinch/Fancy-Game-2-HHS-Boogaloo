@@ -115,7 +115,7 @@ public class GUI extends PApplet {
 				e.draw(this, keys, map.getCurrentMap());
 				if (Map.vr) {
 					pushStyle();
-					noFill();
+					fill(0);
 					stroke(255, 100, 10);
 					rect(e.x, e.y, e.hw, e.hh);
 					popStyle();
@@ -201,6 +201,9 @@ public class GUI extends PApplet {
 		} else if (phase == PLAY) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 			
 			keys[keyCode] = true;
+			if (keyCode == 192) {
+				enemies.clear();
+			}
 		} else if (phase == DEAD) {
 			if (keyCode == 32) {
 				enemies.clear();

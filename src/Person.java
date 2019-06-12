@@ -69,7 +69,10 @@ public abstract class Person {
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 		g.pushStyle();
-		
+		/*if (keys[192]) { //Cheat (for debugging purposes)
+			maxHP *= 10;
+			hp *= 10;
+		}*/
 		if (icon == null)
 			icon = g.loadImage("images" + FileIO.fileSep + "h" + id + ".png");
 		if (altColor == null)

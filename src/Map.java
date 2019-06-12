@@ -165,6 +165,9 @@ public class Map {
 					case 4:
 						GUI.enemies.add(new Henry());
 						break;
+					case 5:
+						GUI.enemies.add(new Shelby());
+						break;
 				}
 			}
 		}

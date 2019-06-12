@@ -7,13 +7,23 @@ import processing.core.PImage;
 public class Abraham extends Person {
 
 	private ArrayList<Projectile> yeses = new ArrayList<Projectile>();
+	private ArrayList<Projectile> yeets = new ArrayList<Projectile>();
 	private ArrayList<Projectile> blocks = new ArrayList<Projectile>();
+	private ArrayList<Projectile> rockets = new ArrayList<Projectile>();
+	private ArrayList<Projectile> smoke = new ArrayList<Projectile>();
+	private PImage smokePic;
 	private PImage yesPic;
 	private PImage blockPic;
+	private PImage[] yeet = new PImage[8];
+	private PImage[] yoinks = new PImage[5];
 	int yes = 0;
+	private PImage rocket;
 	int mx=0;
 	int my=0;
 	boolean throwable = true;
+	int rocketCool = 0;
+	int yoink = 0;
+	boolean yoinking;
 	
 	public Abraham() {
 		super(4, 10, 25); //Speed, Damage, HP
@@ -35,24 +45,61 @@ public class Abraham extends Person {
 		
 		double temp = -Math.sqrt(mx*mx + my*my);
 		
-		yeses.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(40*mx/temp), (int)(40*my/temp), yesPic, 0.2f, true));
+		yeses.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(40*mx/temp), (int)(40*my/temp), yesPic, 0.2f, true, "rotate"));
+		yeses.get(yeses.size()-1).rotateMod = -(float)(Math.PI/2);
 	}
 	
 	@Override
 	public void attack2(int mx, int my) { //Gives elbow connector
-		mx = (int)((float)super.x-mx);
-		my = (int)((float)super.y-my);
+		if (mode == 0 && !unlocked) {
+			mx = (int)((float)super.x-mx);
+			my = (int)((float)super.y-my);
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			
+			blocks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), blockPic, 0.05f, "halt"));
+		} else if (unlocked && mode == 0) {
+			mx = (int)((float)super.x-(mx));
+			my = (int)((float)super.y-(my));
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			
+			yeets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx + (int)(Math.random()*300-150))/temp), (int)(30*(my + (int)(Math.random()*200-100))/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.2f+0.03f, Math.random()>0.6f));
+			yeets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx + (int)(Math.random()*300-150))/temp), (int)(30*(my + (int)(Math.random()*200-100))/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.2f+0.03f, Math.random()>0.6f));
+			yeets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx + (int)(Math.random()*300-150))/temp), (int)(30*(my + (int)(Math.random()*200-100))/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.2f+0.03f, Math.random()>0.6f));
+			yeets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx + (int)(Math.random()*300-150))/temp), (int)(30*(my + (int)(Math.random()*200-100))/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.2f+0.03f, Math.random()>0.6f));
+			yeets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx + (int)(Math.random()*300-150))/temp), (int)(30*(my + (int)(Math.random()*200-100))/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.2f+0.03f, Math.random()>0.6f));
+			yeets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx + (int)(Math.random()*300-150))/temp), (int)(30*(my + (int)(Math.random()*200-100))/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.2f+0.03f, Math.random()>0.6f));
+			
+		} else if (mode == 1 && rocketCool == 0) {
+			rocketCool = 20;
+			mx = (int)((float)super.x-mx);
+			my = (int)((float)super.y-my);
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			
+			rockets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(10*mx/temp), (int)(10*my/temp), rocket, 0.05f, "rotate"));
 		
-		double temp = -Math.sqrt(mx*mx + my*my);
-		
-		blocks.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), blockPic, 0.05f, "halt"));
-	
+		}
 		
 	}
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		
+		if (yoinks[0] == null)
+			for (int i = 0; i < yoinks.length; i++)
+				yoinks[i] = g.loadImage("images"+FileIO.fileSep+"yoink"+i+".png");
+		if (rocketCool > 0)
+			rocketCool--;
+		if (smokePic == null)
+			smokePic = g.loadImage("images"+FileIO.fileSep+"smoke.png");
+		if (rocket == null)
+			rocket = g.loadImage("images"+FileIO.fileSep+"h2m1.png");
+		
+		if (yeet[0] == null)
+			for (int i = 0; i < yeet.length; i++)
+				yeet[i] = g.loadImage("images" + FileIO.fileSep + "yeet" + i + ".png");
 		if (yesPic == null)
 			yesPic = g.loadImage("images" + FileIO.fileSep + "yes.png");
 		if (blockPic == null)
@@ -63,6 +110,34 @@ public class Abraham extends Person {
 				yeses.get(i).draw(g, map);
 			else
 				yeses.remove(i);
+			
+		}
+		for (int i = 0; i < yeets.size(); i++) {
+			if (yeets.get(i).t<12)
+				yeets.get(i).draw(g, map);
+			else
+				yeets.remove(i);
+			
+		}
+		for (int i = 0; i < smoke.size(); i++) {
+			if (smoke.get(i).t<smoke.get(i).ttl)
+				smoke.get(i).draw(g, map);
+			else
+				smoke.remove(i);
+			
+		}
+		for (int i = 0; i < rockets.size(); i++) {
+			if (rockets.get(i).t<20) {
+				rockets.get(i).draw(g, map);
+				rockets.get(i).vx*=1.2f;
+				rockets.get(i).vy*=1.2f;
+				if (rockets.get(i).t > 5) {
+					smoke.add(new Projectile((int)(rockets.get(i).x + rockets.get(i).size/2), (int)(rockets.get(i).y + rockets.get(i).size/2), -(int)(rockets.get(i).vx/10) + (int)(Math.random()*10-5), -(int)(rockets.get(i).vy/10) + (int)(Math.random()*10-5), smokePic, 0.05f, "fade:40"));
+				}
+			} else {
+				explosion(rockets.get(i).x, rockets.get(i).y, 20);
+				rockets.remove(i);
+			}
 			
 		}
 		for (int i = 0; i < blocks.size(); i++) {
@@ -78,6 +153,26 @@ public class Abraham extends Person {
 			
 		}
 		
+		if(yoink>0) 
+			yoink--;
+		
+		if (yoinking && yoink < 30) {
+			speed = (int)(maxSpeed*6);
+			
+			smoke.add(new Projectile((int)(x + hw/2), (int)(y + hh/2), (int)(Math.random()*10-5), (int)(Math.random()*10-5), yoinks[Math.min(yoink/6, yoinks.length-1)], 0.05f, "fade:20"));
+			yoink+=2;
+		} else {
+			speed = maxSpeed;
+			yoinking = false;
+		}
+		
+		if (keys[32]) {
+			if (unlocked && mode == 0 && (keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT]) && yoink < 1) {
+				
+				yoinking = true;
+			}
+		}
+		
 		if (yes > 0) {
 			if (yes%10==0)
 				yes(mx, my);
@@ -87,6 +182,19 @@ public class Abraham extends Person {
 			throwable = true;
 		}
 		
+	}
+	
+	public void explosion(int x, int y, int size) {
+		
+		
+		for (int i = 0; i < Math.random()*size+size; i++) {
+			int mx = (int)((float)(Math.random()*200-100));
+			int my = (int)((float)(Math.random()*200-100));
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			yeses.add(new Projectile((int)(x+this.hw/2), (int)(y+this.hh/2), (int)(50*mx/temp), (int)(50*my/temp), yeet[(int)(Math.random()*yeet.length)], (float)Math.random()*0.1f, Math.random()>0.7));
+			yeses.get(yeses.size()-1).t = 20 + (int)(Math.random()*15);
+		}
 	}
 	
 	public void projectileCollide(PApplet g, ArrayList<Enemy> enemies) {
@@ -99,6 +207,33 @@ public class Abraham extends Person {
 					g.fill(255, 0, 0);
 					g.ellipse(e.x, e.y, e.hw, e.hh);
 					g.popStyle();
+				}
+			}
+		}
+		for (Projectile f : yeets) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size*5;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
+		for (int i = 0; i < rockets.size(); i++) {
+			Projectile f = rockets.get(i);
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size;
+					explosion(f.x, f.y, 20);
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+					rockets.remove(i);
 				}
 			}
 		}

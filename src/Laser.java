@@ -16,6 +16,7 @@ public class Laser {
 	int blinding;
 	Color color;
 	float ttl;
+	private float fancy;
 	public Laser(int x, int y, int dx, int dy, Color c, float size, float ttl) {
 		this.x = x;
 		this.y = y;
@@ -61,12 +62,11 @@ public class Laser {
 	}
 	
 	public void draw(PApplet g, ArrayList<String> map) {
-		if (blinding > 0 && Math.random()>0.3f) {
+		if (blinding > 0 && Math.random()>0.6f) {
 			g.pushStyle();
-			g.ellipseMode(g.RADIUS);
-			g.noStroke();
-			g.fill((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255));
-			g.ellipse(x,  y, blinding, blinding);
+			g.strokeWeight(blinding/10);
+			g.stroke((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255), 100-100*(t/ttl));
+			g.line(x, y, dx, dy);
 			g.popStyle();
 		}
 		//g.image(pic, x-g.width*size*0.5f, y-g.width*size*0.5f, g.width*size, g.width*size);
@@ -105,7 +105,9 @@ public class Laser {
 	}
 	
 	public boolean collide(float ox, float oy, float width, float height) {
-		return pDistance(ox+width/2, oy+height/2, x, y, dx, dy)<height*size*0.01f && ox+width > Math.min(x, dx)-width*size*0.01f && ox < Math.max(x, dx)+width*size*0.01f && oy+height > Math.min(y, dy)-height*size*0.01f && oy < Math.max(y, dy)+height*size*0.01f;
+		fancy = pDistance(ox+width/2, oy+height/2, x, y, dx, dy);
+		
+		return fancy < height*size*0.01f && ox+width > Math.min(x, dx)-width*size*0.01f && ox < Math.max(x, dx)+width*size*0.01f && oy+height > Math.min(y, dy)-height*size*0.01f && oy < Math.max(y, dy)+height*size*0.01f;
 	}
 	
 	public boolean collide(Person other) {
@@ -114,10 +116,12 @@ public class Laser {
 	}
 	
 	public boolean collide(Enemy other) {
-		if (blinding > 0 && Math.sqrt((other.x-x)*(other.x-x)+(other.y-y)*(other.y-y)) < blinding) {
+		boolean result = collide(other.getX(), other.getY(), other.hw, other.hh);
+		if (blinding > 0 && (fancy < blinding || result)) {
 			other.blinded = blinding;
+			System.out.println(other.getClass().toString() + " was blinded by a laser");
 		}
-		return collide(other.getX(), other.getY(), other.hw, other.hh);
+		return result;
 	}
 	
 	public float pDistance(float x, float y, float x1, float y1, float x2, float y2) {

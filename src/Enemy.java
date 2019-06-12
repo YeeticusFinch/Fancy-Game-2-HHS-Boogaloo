@@ -16,6 +16,7 @@ public abstract class Enemy {
 	protected PImage icon;
 	protected PImage foxIcon;
 	protected PImage slinkyIcon;
+	protected PImage memeIcon;
 	protected int f1x;
 	protected int f1y;
 	protected int f2x;
@@ -36,6 +37,7 @@ public abstract class Enemy {
 	protected PImage altIcon = null;
 	public int ox = 0, oy = 0;
 	public int blinded = 0;
+	public boolean meme = false;
 	
 	public Enemy() {
 		
@@ -60,7 +62,7 @@ public abstract class Enemy {
 	}
 	
 	public void spawn(ArrayList<String> map, PApplet g) {
-		for (int i = 0; i < map.size(); i++) {
+		for (int i = 1; i < map.size(); i++) {
 			for (int j = 0; j < map.get(i).length(); j++) {
 				if (map.get(i).charAt(j) == '4' && Math.random()>0.6) {
 					x = (int)(g.width*0.05f*(j));
@@ -85,7 +87,8 @@ public abstract class Enemy {
 		}
 		
 		
-		
+		if (memeIcon == null)
+			memeIcon = g.loadImage("images" + FileIO.fileSep + "e" + id + "m.png");
 		if (icon == null)
 			icon = g.loadImage("images" + FileIO.fileSep + "e" + id + ".png");
 		if (foxIcon == null)
@@ -106,7 +109,11 @@ public abstract class Enemy {
 		g.ellipse(x+g.width*0.01f+h1x, y+g.width*0.065f+h1y, g.width*0.005f, g.width*0.005f); //HANDS
 		g.ellipse(x+g.width*0.05f+h2x, y+g.width*0.065f+h2y, g.width*0.005f, g.width*0.005f);
 		
-		if (altIcon == null)
+		if (meme) {
+			g.image(memeIcon, x, y, g.width*0.06f, g.width*0.06f);
+			if (blinded < 2 && Math.random()>0.98f)
+				blinded += Math.random()*50;
+		} else if (altIcon == null)
 			g.image(icon, x, y, g.width*0.06f, g.width*0.06f);
 		else
 			g.image(altIcon, x, y, g.width*0.06f, g.width*0.06f);

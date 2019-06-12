@@ -19,6 +19,7 @@ public class Anand extends Person {
 	int throwCool = 0;
 	int ex, ey;
 	boolean ironman;
+	int fuel = 100;
 	
 	public Anand() {
 		super(3, 4, 20); //Speed, Damage, HP
@@ -54,7 +55,8 @@ public class Anand extends Person {
 			
 			double temp = -Math.sqrt(mx*mx + my*my);
 			drones.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(15*mx/temp), (int)(15*my/temp), dronePic, 0.09f));
-		} else if (ironman && mode == 1) {
+		} else if (ironman && mode == 1 && fuel > 5) {
+			fuel-=5;
 			laser.add(new Laser((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), mx, my, new Color(100, 100, 255), 10, 50));
 		}
 	}
@@ -69,11 +71,21 @@ public class Anand extends Person {
 			explosions--;
 		}
 		
+		if (fuel < 100 && Math.random() > 0.9f)
+			fuel++;
+		
 		if (dronePic == null)
 			dronePic = g.loadImage("images" + FileIO.fileSep + "h1m0.png");
 		
 		if (throwCool > 0)
 			throwCool--;
+		
+		if (mode == 1 && ironman) {
+			g.pushStyle();
+			g.fill(255);
+			g.text("Fuel: " + fuel, -GUI.tx+g.width*0.3f, -GUI.ty+g.height*0.04f);
+			g.popStyle();
+		}
 		
 		if (keys[32]) {
 			for (int i = 0; i < nukes.size(); i++) {
@@ -88,7 +100,13 @@ public class Anand extends Person {
 				}
 				nukes.remove(i);
 			}
-		}
+			if (mode == 1 && ironman && (keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT]) && fuel > 1) {
+				speed = (int)(maxSpeed*6);
+				fuel--;
+			} else
+				speed = maxSpeed;
+		} else
+			speed = maxSpeed;
 		
 		if (nukePic == null)
 			nukePic = g.loadImage("images" + FileIO.fileSep + "nuke.png");
