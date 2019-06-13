@@ -4,7 +4,8 @@ Controls:
 Arrow keys to move (WASD literally doesn't work on my computer, idk why)
 Left click to use main attack
 Right click to use abilities / secondary attack
-Some abilities are activated by the spacebar
+Some abilities are activated by the spacebar or shift
+In the futur, spacebar abilities can be activated by middle mouse button
 
 Maps:
 Here is an example of a map:
