@@ -11,9 +11,13 @@ public class Abraham extends Person {
 	private ArrayList<Projectile> blocks = new ArrayList<Projectile>();
 	private ArrayList<Projectile> rockets = new ArrayList<Projectile>();
 	private ArrayList<Projectile> smoke = new ArrayList<Projectile>();
+	private ArrayList<Projectile> redApples = new ArrayList<Projectile>();
+	private ArrayList<Projectile> greenApples = new ArrayList<Projectile>();
 	private PImage smokePic;
 	private PImage yesPic;
 	private PImage blockPic;
+	private PImage redApple;
+	private PImage greenApple;
 	private PImage[] yeet = new PImage[8];
 	private PImage[] yoinks = new PImage[5];
 	int yes = 0;
@@ -80,6 +84,16 @@ public class Abraham extends Person {
 			
 			rockets.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(10*mx/temp), (int)(10*my/temp), rocket, 0.05f, "rotate"));
 		
+		} else if (mode == 2) {
+			mx = (int)((float)super.x-mx);
+			my = (int)((float)super.y-my);
+			
+			double temp = -Math.sqrt(mx*mx + my*my);
+			
+			greenApples.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), greenApple, 0.05f, "halt"));
+			greenApples.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*(mx + (int)(Math.random()*300-150))/temp), (int)(20*(mx + (int)(Math.random()*300-150))/temp), greenApple, 0.05f, "halt"));
+			greenApples.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*(mx + (int)(Math.random()*300-150))/temp), (int)(20*(mx + (int)(Math.random()*300-150))/temp), greenApple, 0.05f, "halt"));
+			
 		}
 		
 	}
@@ -87,6 +101,10 @@ public class Abraham extends Person {
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		
+		if (redApple == null)
+			redApple = g.loadImage("images"+FileIO.fileSep+"h2m2.png");
+		if (greenApple == null)
+			greenApple = g.loadImage("images"+FileIO.fileSep+"greenApple.png");
 		if (yoinks[0] == null)
 			for (int i = 0; i < yoinks.length; i++)
 				yoinks[i] = g.loadImage("images"+FileIO.fileSep+"yoink"+i+".png");
@@ -124,6 +142,20 @@ public class Abraham extends Person {
 				smoke.get(i).draw(g, map);
 			else
 				smoke.remove(i);
+			
+		}
+		for (int i = 0; i < redApples.size(); i++) {
+			if (redApples.get(i).t<50)
+				redApples.get(i).draw(g, map);
+			else
+				redApples.remove(i);
+			
+		}
+		for (int i = 0; i < greenApples.size(); i++) {
+			if (greenApples.get(i).t<20)
+				greenApples.get(i).draw(g, map);
+			else
+				greenApples.remove(i);
 			
 		}
 		for (int i = 0; i < rockets.size(); i++) {
@@ -210,6 +242,40 @@ public class Abraham extends Person {
 				}
 			}
 		}
+		for (int i = 0; i < greenApples.size(); i++) {
+			Projectile f = greenApples.get(i);
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= 2;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+					greenApples.remove(i);
+					int mx = (int)((float)e.x-x);
+					int my = (int)((float)e.y-y);
+					
+					double temp = -Math.sqrt(mx*mx + my*my);
+					redApples.add(new Projectile((int)(e.x+e.hw/2), (int)(e.y+e.hh/2), (int)(25*mx/temp), (int)(25*my/temp), redApple, 0.05f, "halt"));
+					break;
+				}
+			}
+		}
+		
+		for (int i = 0; i < redApples.size(); i++) {
+			Projectile f = redApples.get(i);
+			if (hp > 0 && f.collide(this)) {
+				hp = (int)Math.min(hp + Math.random()*2+2, maxHP);
+				g.pushStyle();
+				g.ellipseMode(PConstants.CORNER);
+				g.fill(0, 255, 0);
+				g.ellipse(x, y, hw, hh);
+				g.popStyle();
+				redApples.remove(i);
+			}
+		}
+		
 		for (Projectile f : yeets) {
 			for (Enemy e : enemies) {
 				if (e.hp > 0 && f.collide(e)) {
