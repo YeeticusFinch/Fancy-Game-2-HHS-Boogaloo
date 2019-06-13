@@ -232,6 +232,11 @@ public class GUI extends PApplet {
 			keys[keyCode] = false;
 		}
 	}
+
+        public void mouseReleased() {
+                if (mouseButton == MIDDLE)
+                        keys[32] = false;
+        }
 	
 	public void mousePressed() { //Yeet, I like them triangles
 		if (phase == SELECTION) {
@@ -253,7 +258,9 @@ public class GUI extends PApplet {
 				player.attack(mouseX-(int)tx, mouseY-(int)ty);
 			} else if (mouseButton == RIGHT) {
 				player.attack2(mouseX-(int)tx, mouseY-(int)ty);
-			}
+			} else if (mouseButton == MIDDLE) {
+                                keys[32] = true;
+                        }
 		}
 	}
 	
