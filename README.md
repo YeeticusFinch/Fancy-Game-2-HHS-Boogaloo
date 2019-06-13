@@ -57,7 +57,7 @@ It’s easiest to just copy paste an existing enemy.
 
 Extend class Enemy
 
-In the constructor, put “super(speed, damage, hp, ID)
+In the no args constructor, put “super(speed, damage, hp, ID)
 The ID is the number corresponding to the enemy (Darius is 0, French teacher is 1)
 
 Create a move method, an attack method, an attack2 method, and a draw method. In the draw method, call the superclass draw method.
@@ -68,6 +68,8 @@ Add another image to that same folder under the name “e”+ID+”m.pmg” (ex:
 That second image will only show up if the player is playing as Claire and uses the meme ability
 Two attack classes have already been programmed: Projectile and Laser
 Finally go into the map class and add your new enemy to the switch statement under the same case number as the ID
+
+Don’t forget to draw the projectiles in your new enemy subclass and delete them after a certain amount of time (reduce lag)
 
 If you want to create a new playable character, the steps are very similar to those of the enemies, but you are going to need to program 3 power ups.
 For each power up icon, upload it under the name “h”+PlayerID+“m”+PowerUpId+”.png” (ex: “h3m0” is carl’s Unicycle)
