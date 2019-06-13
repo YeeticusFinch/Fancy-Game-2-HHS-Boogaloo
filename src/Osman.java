@@ -18,11 +18,19 @@ public class Osman extends Person {
 	
 	private ArrayList<Projectile> slinkies = new ArrayList<Projectile>();
 	
+	private ArrayList<Projectile> bigSlinkies = new ArrayList<Projectile>();
+	
+	private ArrayList<Projectile> smallSlinkies = new ArrayList<Projectile>();
+	
 	private ArrayList<Projectile> trees = new ArrayList<Projectile>();
 	
 	private ArrayList<Projectile> thumbs = new ArrayList<Projectile>();
 	
 	private PImage slinky;
+	
+	private PImage smallSlinky;
+	
+	private PImage bigSlinky;
 	
 	private PImage thumb;
 	
@@ -72,7 +80,23 @@ public class Osman extends Person {
 			if (mode == 2)
 				thumbExplosion();
 			else if (mode == 1 && Math.random() > 0.5 && dashCool > 20)
-				slinkies.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(Math.random()*10-5), (int)(Math.random()*10-5), slinky, 0.05f, "halt"));
+				slinky((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(Math.random()*10-5), (int)(Math.random()*10-5));
+			}
+		
+	}
+	
+	private void slinky(int x, int y, int vx, int vy) {
+		
+		switch ((int)(Math.random()*3)) {
+			case 0:
+				slinkies.add(new Projectile(x, y, vx, vy, slinky, 0.05f, "halt"));
+				break;
+			case 1:
+				smallSlinkies.add(new Projectile(x, y, 2*vx, 2*vy, smallSlinky, 0.02f, "halt"));
+				break;
+			case 2:
+				bigSlinkies.add(new Projectile(x, y, vx/2, vy/2, bigSlinky, 0.08f, "halt"));
+				break;
 		}
 		
 	}
@@ -116,6 +140,10 @@ public class Osman extends Person {
 		if (slinky == null) {
 			slinky = g.loadImage("images" + FileIO.fileSep + "h0m1.png");
 		}
+		if (smallSlinky == null)
+			smallSlinky = g.loadImage("images"+FileIO.fileSep+"plastics.png");
+		if (bigSlinky == null)
+			bigSlinky = g.loadImage("images"+FileIO.fileSep+"metals.png");
 		if (tree == null) {
 			tree = g.loadImage("images" + FileIO.fileSep + "h0m2.png");
 		}
@@ -193,6 +221,28 @@ public class Osman extends Person {
 			}
 			else
 				slinkies.remove(i);
+			
+		}
+		
+		for (int i = 0; i < smallSlinkies.size(); i++) {
+			if (smallSlinkies.get(i).t<300) {
+				smallSlinkies.get(i).draw(g, map);
+				smallSlinkies.get(i).vx *= 0.99f;
+				smallSlinkies.get(i).vy *= 0.99f;
+			}
+			else
+				smallSlinkies.remove(i);
+			
+		}
+		
+		for (int i = 0; i < bigSlinkies.size(); i++) {
+			if (bigSlinkies.get(i).t<100) {
+				bigSlinkies.get(i).draw(g, map);
+				bigSlinkies.get(i).vx *= 0.9f;
+				bigSlinkies.get(i).vy *= 0.9f;
+			}
+			else
+				bigSlinkies.remove(i);
 			
 		}
 		
@@ -304,6 +354,33 @@ public class Osman extends Person {
 				}
 			}
 		}
+		
+		for (Projectile f : smallSlinkies) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.fox = 200;
+					e.smallSlinky = true;
+				}
+			}
+		}
+		
+		for (int i = 0; i < bigSlinkies.size(); i++) {
+			Projectile f = bigSlinkies.get(i);
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e) && i < bigSlinkies.size()) {
+					e.fox = 800;
+					e.bigSlinky = true;
+					e.hp -= 3;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+					bigSlinkies.remove(i);
+					break;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -317,7 +394,7 @@ public class Osman extends Person {
 			
 			double temp = -Math.sqrt(mx*mx + my*my);
 			
-			slinkies.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), slinky, 0.05f, "halt"));
+			slinky((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp));
 			
 		} else if (mode == 2) {
 			trees.add(new Projectile(mx, my, 0, 0, tree, 0.25f));

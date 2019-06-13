@@ -16,6 +16,8 @@ public abstract class Enemy {
 	protected PImage icon;
 	protected PImage foxIcon;
 	protected PImage slinkyIcon;
+	protected PImage smallSlinkyIcon;
+	protected PImage bigSlinkyIcon;
 	protected PImage memeIcon;
 	protected int f1x;
 	protected int f1y;
@@ -38,6 +40,8 @@ public abstract class Enemy {
 	public int ox = 0, oy = 0;
 	public int blinded = 0;
 	public boolean meme = false;
+	public boolean smallSlinky = false;
+	public boolean bigSlinky = false;
 	
 	public Enemy() {
 		
@@ -95,6 +99,11 @@ public abstract class Enemy {
 			foxIcon = g.loadImage("images" + FileIO.fileSep + "fox.png");
 		if (slinkyIcon == null)
 			slinkyIcon = g.loadImage("images" + FileIO.fileSep + "h0m1.png");
+		if (smallSlinkyIcon == null)
+			smallSlinkyIcon = g.loadImage("images" + FileIO.fileSep + "plastics.png");
+		if (bigSlinkyIcon == null)
+			bigSlinkyIcon = g.loadImage("images" + FileIO.fileSep + "metals.png");
+		
 		g.fill(0);
 		
 		hw = g.width*0.06f;
@@ -159,16 +168,22 @@ public abstract class Enemy {
 				g.fill(255, 0, 0);
 				g.text("OW", x+g.width*0.04f*(float)Math.random()-0.02f, y+g.width*0.04f*(float)Math.random()-0.02f);
 				g.popStyle();
-			}
-			else if (!slinky)
-				g.image(foxIcon, x, y, hw, hh/2);
-			else
+			} else if (slinky) {
 				g.image(slinkyIcon, x, y, hw, hh/2);
+			}
+			else if (smallSlinky)
+				g.image(smallSlinkyIcon, x, y, hw, hh/2);
+			else if (bigSlinky)
+				g.image(bigSlinkyIcon, x, y, hw, hh/2);
+			else
+				g.image(foxIcon, x, y, hw, hh/2);
 		}
 		else {
 			speed = maxSpeed;
 			glass = false;
 			slinky = false;
+			smallSlinky = false;
+			bigSlinky = false;
 		}
 		
 		
