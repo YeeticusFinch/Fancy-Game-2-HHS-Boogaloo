@@ -210,10 +210,10 @@ public class GUI extends PApplet {
 			} else if (keyCode == 8) {
 				selected = -1;
 			}
-		} else if (phase == PLAY) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
+		} else if (phase == PLAY && player.fox < 1) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 			
 			keys[keyCode] = true;
-			if (keyCode == 192) {
+			if (keyCode == 192) { // REEE CHEATING
 				enemies.clear();
 			}
 		} else if (phase == DEAD) {
@@ -254,11 +254,11 @@ public class GUI extends PApplet {
 				}
 			}
 		} else if (phase == PLAY) {
-			if (mouseButton == LEFT) {
+			if (mouseButton == LEFT && player.fox < 1) {
 				player.attack(mouseX-(int)tx, mouseY-(int)ty);
-			} else if (mouseButton == RIGHT) {
+			} else if (mouseButton == RIGHT && player.fox < 1) {
 				player.attack2(mouseX-(int)tx, mouseY-(int)ty);
-			} else if (mouseButton == CENTER) {
+			} else if (mouseButton == CENTER && player.fox < 1) {
 				keys[32] = true;
 			}
 		}

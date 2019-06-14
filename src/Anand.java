@@ -10,7 +10,16 @@ public class Anand extends Person {
 	private ArrayList<Projectile> nukes = new ArrayList<Projectile>();
 	private ArrayList<Projectile> drones = new ArrayList<Projectile>();
 	private ArrayList<Projectile> fire = new ArrayList<Projectile>();
+	private ArrayList<Projectile> bags = new ArrayList<Projectile>();
+	private ArrayList<Projectile> darts = new ArrayList<Projectile>();
+	private ArrayList<Projectile> tellers = new ArrayList<Projectile>();
+	private ArrayList<Projectile> canes = new ArrayList<Projectile>();
 	private ArrayList<Laser> laser = new ArrayList<Laser>();
+	private PImage[] personalities = new PImage[4];
+	private PImage dartPic;
+	private PImage canePic;
+	private PImage teller;
+	private PImage bagPic;
 	private PImage nukePic;
 	private PImage firePic;
 	private PImage dronePic;
@@ -20,14 +29,40 @@ public class Anand extends Person {
 	int ex, ey;
 	boolean ironman;
 	int fuel = 100;
+	int personality = 0;
+	private int shoot = 0;
+	private int tmx, tmy;
 	
 	public Anand() {
 		super(3, 4, 20); //Speed, Damage, HP
 	}
 	
+	public void shoot(int mx, int my) {
+		mx += (int)(Math.random()*200-100);
+		my += (int)(Math.random()*200-100);
+		
+		double temp = -Math.sqrt(mx*mx + my*my);
+		
+		darts.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(40*mx/temp), (int)(40*my/temp), dartPic, 0.04f));
+	
+	}
+	
+	public boolean nukeIsClose(int mx, int my) {
+		
+		for (Projectile e : nukes) {
+			int dx = e.x-mx;
+			int dy = e.y-my;
+			if (Math.sqrt(dx*dx + dy*dy) < 200)
+				return true;
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public void attack(int mx, int my) { //Throws nuke
 		if (throwCool == 0) {
+			personality = 0;
 			throwCool = 20;
 			mx = (int)((float)super.x-mx);
 			my = (int)((float)super.y-my);
@@ -58,12 +93,68 @@ public class Anand extends Person {
 		} else if (ironman && mode == 1 && fuel > 5) {
 			fuel-=5;
 			laser.add(new Laser((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), mx, my, new Color(100, 100, 255), 10, 50));
+		} else if (mode == 2 && throwCool == 0) {
+			throwCool = 15;
+			if (personality == 0 || Math.random()>0.6f) {
+				personality = (int)(Math.random()*4)+1;
+			}
+			fancyAttack(mx, my);
+		}
+	}
+	
+	private void fancyAttack(int mx, int my) {
+		mx = (int)((float)super.x-mx);
+		my = (int)((float)super.y-my);
+		
+		
+		double temp = -Math.sqrt(mx*mx + my*my);
+		
+		switch (personality-1) {
+			case 0:
+				shoot = 30;
+				tmx = mx;
+				tmy = my;
+				break;
+			case 1:
+				bags.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(20*mx/temp), (int)(20*my/temp), bagPic, 0.09f));
+				break;
+			case 2:
+				tellers.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(15*mx/temp), (int)(15*my/temp), teller, 0.09f));
+				break;
+			case 3:
+				canes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx+(Math.random()*200-100))/temp), (int)(30*(my+(Math.random()*200-100))/temp), canePic, 0.06f));
+				canes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx+(Math.random()*200-100))/temp), (int)(30*(my+(Math.random()*200-100))/temp), canePic, 0.06f));
+				canes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx+(Math.random()*200-100))/temp), (int)(30*(my+(Math.random()*200-100))/temp), canePic, 0.06f));
+				canes.add(new Projectile((int)(super.x+this.hw/2), (int)(super.y+this.hh/2), (int)(30*(mx+(Math.random()*200-100))/temp), (int)(30*(my+(Math.random()*200-100))/temp), canePic, 0.06f));
+				break;
 		}
 	}
 	
 	public void draw(PApplet g, int id, boolean[] keys, ArrayList<String> map) {
 		super.draw( g,  id, keys, map);
 		
+		if (canePic == null)
+			canePic = g.loadImage("images"+FileIO.fileSep+"cane.png");
+		if (teller == null)
+			teller = g.loadImage("images"+FileIO.fileSep+"teller.png");
+		if (dartPic == null)
+			dartPic = g.loadImage("images" + FileIO.fileSep + "dart.png");
+		if (bagPic == null) {
+			bagPic = g.loadImage("images" + FileIO.fileSep + "bag.png");
+		}
+		
+		if (shoot > 0) {
+			if (shoot % 3 == 0) {
+				shoot(tmx, tmy);
+			}
+			shoot--;
+		}
+		
+		if (personalities[0] == null) {
+			for (int i = 0; i < personalities.length; i++) {
+				personalities[i] = g.loadImage("images" + FileIO.fileSep + "ap" + i + ".png");
+			}
+		}
 		
 		if (explosions > 0) {
 			if (explosions %4 == 0)
@@ -85,6 +176,10 @@ public class Anand extends Person {
 			g.fill(255);
 			g.text("Fuel: " + fuel, -GUI.tx+g.width*0.3f, -GUI.ty+g.height*0.04f);
 			g.popStyle();
+		} else if (mode == 2 && personality != 0) {
+			altIcon = personalities[personality-1];
+		} else if (mode == 2 && personality == 0 && altIcon != null) {
+			altIcon = null;
 		}
 		
 		if (keys[32]) {
@@ -123,9 +218,9 @@ public class Anand extends Person {
 		if (ironman) {
 			altIcon = ironPic;
 			altColor = new Color(100, 10, 10);
-			if (!Map.vr)
+			if (!Map.vr && !enemy)
 				Map.vr = true;
-		} else if (altIcon != null) {
+		} else if (mode == 1 && altIcon != null) {
 			if (Map.vr)
 				Map.vr = false;
 			altIcon = null;
@@ -153,6 +248,40 @@ public class Anand extends Person {
 				drones.get(i).draw(g, map);
 			else
 				drones.remove(i);
+			
+		}
+		
+		for (int i = 0; i < bags.size(); i++) {
+			if (bags.get(i).t<20)
+				bags.get(i).draw(g, map);
+			else
+				bags.remove(i);
+			
+		}
+		
+		for (int i = 0; i < canes.size(); i++) {
+			if (canes.get(i).t<20)
+				canes.get(i).draw(g, map);
+			else
+				canes.remove(i);
+			
+		}
+		
+		for (int i = 0; i < darts.size(); i++) {
+			if (darts.get(i).t<15)
+				darts.get(i).draw(g, map);
+			else
+				darts.remove(i);
+			
+		}
+		
+		for (int i = 0; i < tellers.size(); i++) {
+			if (tellers.get(i).t<40)
+				tellers.get(i).draw(g, map);
+			else {
+				explosion(tellers.get(i).x, tellers.get(i).y, 40);
+				tellers.remove(i);
+			}
 			
 		}
 		
@@ -220,6 +349,42 @@ public class Anand extends Person {
 				}
 			}
 		}
+		for (Projectile f : darts) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size*0.3f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
+		for (Projectile f : canes) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= f.size*0.5f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
+		for (Projectile f : bags) {
+			for (Enemy e : enemies) {
+				if (e.hp > 0 && f.collide(e)) {
+					e.hp -= 70;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();
+				}
+			}
+		}
 		for (Projectile f : fire) {
 			if (!ironman && f.collide(this) && ((!unlocked && Math.random()>0.6f) || (unlocked && Math.random()>0.8f))) {
 				hp -= 1;
@@ -239,6 +404,94 @@ public class Anand extends Person {
 					g.popStyle();
 				}
 			}
+		}
+	}
+
+	@Override
+	public void enemyProjectileCollide(PApplet g, Person p) {
+		// TODO Auto-generated method stub
+		for (int i = 0; i < drones.size(); i++) {
+			Projectile f = drones.get(i);
+				if (p.hp > 0 && Math.sqrt((p.x-f.x)*(p.x-f.x)+(p.y-f.y)*(p.y-f.y)) < hw*0.5f) {
+					explosion(f.x, f.y, 15);
+					drones.remove(i);
+				}
+				if (f.t > 8 && Math.sqrt((p.x-f.x)*(p.x-f.x)+(p.y-f.y)*(p.y-f.y)) < hw*5) {
+					double mx = (int)((float)f.x-p.x);
+					double my = (int)((float)f.y-p.y);
+					double temp = -Math.sqrt(mx*mx + my*my);
+					f.vx = (int)(20*mx/temp);
+					f.vy = (int)(20*my/temp);
+					break;
+				}
+		}
+		for (Projectile f : nukes) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*5;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Laser f : laser) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*0.2f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : darts) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*0.3f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : canes) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*0.5f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : bags) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= 70;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : fire) {
+			if (!ironman && f.collide(this) && ((!unlocked && Math.random()>0.6f) || (unlocked && Math.random()>0.8f))) {
+				hp -= 1;
+				g.pushStyle();
+				g.ellipseMode(PConstants.CORNER);
+				g.fill(255, 0, 0);
+				g.ellipse(x, y, hw, hh);
+				g.popStyle();
+			}
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*10;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
 		}
 	}
 	

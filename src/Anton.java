@@ -238,7 +238,7 @@ public class Anton extends Person {
 		if (noGlassTimer > 0) {
 			noGlassTimer --;
 			if (unlocked && mode == 0) {
-				if (noGlassTimer > 2) {GUI.zoom = 0.8f; Map.vr = true;}
+				if (noGlassTimer > 2 && !enemy) {GUI.zoom = 0.8f; Map.vr = true;}
 				else {GUI.zoom = 1; Map.vr = false;}
 				
 			}
@@ -339,6 +339,59 @@ public class Anton extends Person {
 			for (Enemy e : enemies) {
 				f.collide(e);
 			}
+		}
+	}
+
+	@Override
+	public void enemyProjectileCollide(PApplet g, Person p) {
+		// TODO Auto-generated method stub
+		for (Projectile f : comps) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*1.1f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : maths) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*0.4f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (int i = 0; i < glass.size(); i++) {
+			Projectile f = glass.get(i);
+				if (p.fox < 1 && p.hp > 0 && f.collide(p) && glass.size() > 0) {
+					p.hp -= f.size*0.4f;
+					p.fox = 500;
+					p.glass = true;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+					f.vx *= 0.5;
+					f.vy *= 0.5;
+				}
+		}
+		for (Projectile f : oranges) {
+				if (p.hp > 0 && Math.sqrt((p.x-f.x)*(p.x-f.x)+(p.y-f.y)*(p.y-f.y)) < hw*5) {
+					p.ox = f.x;
+					p.oy = f.y;
+				}
+		}
+		if (oranges.size() == 0 && mode == 1) {
+				p.ox = 0;
+				p.oy = 0;
+		}
+		for (Projectile f : led) {
+				f.collide(p);
 		}
 	}
 	

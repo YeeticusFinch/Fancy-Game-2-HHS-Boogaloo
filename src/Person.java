@@ -17,6 +17,10 @@ public abstract class Person {
 	protected int yo;
 	protected PImage icon;
 	protected PImage altIcon;
+	protected PImage foxIcon;
+	protected PImage slinkyIcon;
+	protected PImage smallSlinkyIcon;
+	protected PImage bigSlinkyIcon;
 	protected int f1x;
 	protected int f1y;
 	protected int f2x;
@@ -30,6 +34,14 @@ public abstract class Person {
 	public int mode = 0;
 	public boolean unlocked = false;
 	protected float modX = 1, modY = 1;
+	public int fox = 0;
+	public boolean slinky;
+	public boolean smallSlinky;
+	public boolean bigSlinky;
+	public boolean glass;
+	public int blinded;
+	public int ox = 0, oy = 0;
+	public boolean enemy = false;
 	
 	protected java.awt.Color altColor;
 	
@@ -73,6 +85,14 @@ public abstract class Person {
 			maxHP *= 10;
 			hp *= 10;
 		}*/
+		if (foxIcon == null)
+			foxIcon = g.loadImage("images" + FileIO.fileSep + "fox.png");
+		if (slinkyIcon == null)
+			slinkyIcon = g.loadImage("images" + FileIO.fileSep + "h0m1.png");
+		if (smallSlinkyIcon == null)
+			smallSlinkyIcon = g.loadImage("images" + FileIO.fileSep + "plastics.png");
+		if (bigSlinkyIcon == null)
+			bigSlinkyIcon = g.loadImage("images" + FileIO.fileSep + "metals.png");
 		if (icon == null)
 			icon = g.loadImage("images" + FileIO.fileSep + "h" + id + ".png");
 		if (altColor == null)
@@ -96,17 +116,54 @@ public abstract class Person {
 		else
 			g.image(altIcon, x, y, g.width*0.06f, g.width*0.06f);
 		
-		if (keys[g.UP])
-			y-=g.width*0.001*speed*modY;
-		if (keys[g.DOWN])
-			y+=g.width*0.001*speed*modY;
-		if (keys[g.LEFT])
-			x-=g.width*0.001*speed*modX;
-		if (keys[g.RIGHT])
-			x+=g.width*0.001*speed*modX;
-		if ((modX != 1 && modY != 1) && (keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT])) {
-			y+=speed*(modY-0.5f);
-			x+=speed*(modX-0.5f);
+		if (fox > 0) {
+			fox-=8;
+			if (glass) {
+				g.pushStyle();
+				g.textSize(g.width*0.03f);
+				g.fill(255, 0, 0);
+				g.text("OW", x+g.width*0.04f*(float)Math.random()-0.02f, y+g.width*0.04f*(float)Math.random()-0.02f);
+				g.popStyle();
+			} else if (slinky) {
+				g.image(slinkyIcon, x, y, hw, hh/2);
+			}
+			else if (smallSlinky)
+				g.image(smallSlinkyIcon, x, y, hw, hh/2);
+			else if (bigSlinky)
+				g.image(bigSlinkyIcon, x, y, hw, hh/2);
+			else
+				g.image(foxIcon, x, y, hw, hh/2);
+		}
+		else if (fox < 1) {
+			slinky = false;
+			glass = false;
+			smallSlinky = false;
+			bigSlinky = false;
+			if (keys[g.UP])
+				y-=g.width*0.001*speed*modY;
+			if (keys[g.DOWN])
+				y+=g.width*0.001*speed*modY;
+			if (keys[g.LEFT])
+				x-=g.width*0.001*speed*modX;
+			if (keys[g.RIGHT])
+				x+=g.width*0.001*speed*modX;
+			if ((modX != 1 && modY != 1) && (keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT])) {
+				y+=speed*(modY-0.5f);
+				x+=speed*(modX-0.5f);
+			}
+		}
+		if (ox != 0 && oy != 0) {
+			int vx = x-ox;
+			int vy = y-oy;
+			int temp = (int)(Math.sqrt(vx*vx + vy*vy));
+			x+=speed*vx/temp;
+			y+=speed*vy/temp;
+		}
+		if (blinded > 0) {
+			blinded--;
+			System.out.println("BLINDED");
+			g.fill(255);
+			g.rect(GUI.tx, GUI.ty, g.width, g.height);
 		}
 		g.popStyle();
 		
@@ -146,7 +203,7 @@ public abstract class Person {
 		}
 		//g.rect(g.width*0.05f*j, g.width*0.05f*(i-1), g.width*0.05f, g.width*0.05f);
 		int fancy = Math.max(Math.min(1+(int)((y+g.width*0.025f)/(g.width*0.05f)), map.size()-1), 0);
-		char fancyChar = map.get(fancy).charAt(Math.max(Math.min((int)((x+g.width*0.025f)/(g.width*0.05f)),map.get(fancy).length()), 0));
+		char fancyChar = map.get(fancy).charAt(Math.max(Math.min((int)((x+g.width*0.025f)/(g.width*0.05f)),map.get(fancy).length()-1), 0));
 		if (fancyChar == '1') {
 			x = xo;
 			y = yo;
@@ -160,7 +217,7 @@ public abstract class Person {
 			yo = y;
 		}
 		
-		return map.get(1+(int)((y+g.width*0.025f)/(g.width*0.05f))).charAt((int)((x+g.width*0.025f)/(g.width*0.05f)));
+		return fancyChar;
 		
 	}
 	
@@ -169,5 +226,12 @@ public abstract class Person {
 	public abstract void attack2(int mx, int my);
 	
 	public abstract void projectileCollide(PApplet g, ArrayList<Enemy> enemies);
+
+	public abstract void enemyProjectileCollide(PApplet g, Person p);
+
+	public boolean nukeIsClose(int mx, int my) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

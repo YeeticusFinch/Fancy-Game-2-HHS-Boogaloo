@@ -305,5 +305,75 @@ public class Abraham extends Person {
 		}
 		
 	}
+
+	@Override
+	public void enemyProjectileCollide(PApplet g, Person p) {
+		// TODO Auto-generated method stub
+		for (Projectile f : yeses) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*4;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (int i = 0; i < greenApples.size(); i++) {
+			Projectile f = greenApples.get(i);
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= 2;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+					greenApples.remove(i);
+					int mx = (int)((float)p.x-x);
+					int my = (int)((float)p.y-y);
+					
+					double temp = -Math.sqrt(mx*mx + my*my);
+					redApples.add(new Projectile((int)(p.x+p.hw/2), (int)(p.y+p.hh/2), (int)(25*mx/temp), (int)(25*my/temp), redApple, 0.05f, "halt"));
+					break;
+				}
+		}
+		
+		for (int i = 0; i < redApples.size(); i++) {
+			Projectile f = redApples.get(i);
+			if (hp > 0 && f.collide(this)) {
+				hp = (int)Math.min(hp + Math.random()*2+2, maxHP);
+				g.pushStyle();
+				g.ellipseMode(PConstants.CORNER);
+				g.fill(0, 255, 0);
+				g.ellipse(x, y, hw, hh);
+				g.popStyle();
+				redApples.remove(i);
+			}
+		}
+		
+		for (Projectile f : yeets) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*5;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (int i = 0; i < rockets.size(); i++) {
+			Projectile f = rockets.get(i);
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size;
+					explosion(f.x, f.y, 20);
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+					rockets.remove(i);
+				}
+		}
+	}
 	
 }

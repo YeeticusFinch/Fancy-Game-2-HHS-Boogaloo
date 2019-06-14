@@ -283,5 +283,50 @@ public class Carl extends Person {
 			}
 		}
 	}
+
+	@Override
+	public void enemyProjectileCollide(PApplet g, Person p) {
+		// TODO Auto-generated method stub
+		if (mode == 0 && unlocked && unicycle) {
+				if ((Math.abs(uvx) > 8 || Math.abs(uvy) > 8) && Math.random()>0.9f && Math.abs(p.x-x) < hw && Math.abs(p.y-y) < hh) {
+					p.hp -= 1;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : thumbs) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*1.1f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : darts) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*0.3f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : unicycles) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= 0.5f*Math.sqrt(f.vx*f.vx+f.vy*f.vy);
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+	}
 	
 }

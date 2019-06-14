@@ -264,4 +264,68 @@ public class Claire extends Person {
 			}
 		}
 	}
+	
+	public void enemyProjectileCollide(PApplet g, Person p) {
+		for (Projectile f : sparks) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size;
+					g.pushStyle();
+					g.image(sparkPic[(int)(Math.random()*7)], p.x, p.y, p.hw, p.hh);
+					g.image(sparkPic[(int)(Math.random()*7)], p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+					if (mode == 1 && p.blinded > 0)
+						hp=Math.min(hp+1, maxHP);
+				}
+		}
+		for (Projectile f : hDrives) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		for (Projectile f : disks) {
+			if (f.t >= 82) {
+					if (f.t < 88 && Math.sqrt((p.x-f.x)*(p.x-f.x)+(p.y-f.y)*(p.y-f.y)) < p.hh*5) {
+						double mx = (int)((float)f.x-p.x);
+						double my = (int)((float)f.y-p.y);
+						double temp = -Math.sqrt(mx*mx + my*my);
+						f.vx = (int)(35*mx/temp);
+						f.vy = (int)(35*my/temp);
+					}
+					if (p.hp > 0 && f.collide(p)) {
+						p.hp -= f.size*20;
+						g.pushStyle();
+						g.ellipseMode(PConstants.CORNER);
+						g.fill(255, 0, 0);
+						g.ellipse(p.x, p.y, p.hw, p.hh);
+						g.popStyle();
+					}
+			}
+		}
+		for (Projectile f : foxes) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.fox = 200;
+				}
+		}
+		for (Projectile f : eGren) {
+				if (Math.sqrt((p.x-f.x)*(p.x-f.x)+(p.y-f.y)*(p.y-f.y)) < p.hh*4 && Math.random()>0.2f) {
+					laser.add(new Laser(f.x, f.y, (int)(p.x+hw/2), (int)(p.y+hh/2), new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255)), 10, 20));
+					laser.get(laser.size()-1).blinding = 200;
+				}
+		}
+		for (Laser f : laser) {
+				if (p.hp > 0 && f.collide(p)) {
+					/*e.hp -= f.size*0.2f;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(e.x, e.y, e.hw, e.hh);
+					g.popStyle();*/
+				}
+		}
+	}
 }

@@ -401,4 +401,95 @@ public class Osman extends Person {
 		}
 	}
 	
+	public void enemyProjectileCollide(PApplet g, Person p) {
+		for (Projectile f : elbows) {
+				if (p.hp > 0 && f.collide(p)) {
+					
+					if (Math.random()>((float)hp/maxHP*1.2f	)) {
+						int mx = (int)((float)(Math.random()*200-100));
+						int my = (int)((float)(Math.random()*200-100));
+					
+						double temp = -Math.sqrt(mx*mx + my*my);
+						hPacks.add(new Projectile((int)(f.x+this.hw/2), (int)(f.y+this.hh/2), (int)(30*mx/temp), (int)(30*my/temp), hPackPic, 0.1f, "halt"));
+					}
+					p.hp -= f.size*8;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		
+		for (Projectile f : bois) {
+				if (p.hp > 0 && f.collide(p)) {
+					
+					p.hp -= f.size*0.9;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		
+		for (Projectile f : thumbs) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.hp -= f.size*0.9;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+				}
+		}
+		
+		for (int i = 0; i < hPacks.size(); i++) {
+			if (hPacks.get(i).collide(this)) {
+				if (hp < maxHP) {
+					hp++;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(0, 255, 0);
+					g.stroke(0, 255, 0);
+					g.ellipse(x, y, hw, hh);
+					g.popStyle();
+				}
+				
+				hPacks.remove(i);
+				
+			}
+		}
+		
+		for (Projectile f : slinkies) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.fox = 400;
+					p.slinky = true;
+				}
+		}
+		
+		for (Projectile f : smallSlinkies) {
+				if (p.hp > 0 && f.collide(p)) {
+					p.fox = 200;
+					p.smallSlinky = true;
+				}
+		}
+		
+		for (int i = 0; i < bigSlinkies.size(); i++) {
+			Projectile f = bigSlinkies.get(i);
+				if (p.hp > 0 && f.collide(p) && i < bigSlinkies.size()) {
+					p.fox = 800;
+					p.bigSlinky = true;
+					p.hp -= 3;
+					g.pushStyle();
+					g.ellipseMode(PConstants.CORNER);
+					g.fill(255, 0, 0);
+					g.ellipse(p.x, p.y, p.hw, p.hh);
+					g.popStyle();
+					bigSlinkies.remove(i);
+					break;
+				}
+		}
+	}
+	
 }

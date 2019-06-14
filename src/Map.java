@@ -30,7 +30,7 @@ public class Map {
 			}
 			mDet.add(yoink);
 			maxX.add(0);
-			for (int j = 0; j < map.get(map.size() - 1).size(); j++)
+			for (int j = 1; j < map.get(map.size() - 1).size(); j++)
 				if (maxX.get(maxX.size() - 1) < map.get(map.size() - 1).get(j).length())
 					maxX.set(maxX.size() - 1, map.get(map.size() - 1).get(j).length());
 			maxY.add(map.get(map.size() - 1).size());
@@ -61,8 +61,12 @@ public class Map {
 			hPack = g.loadImage("images" + FileIO.fileSep + "hPack.png");
 		g.pushStyle();
 		if (map.get(m).get(0).substring(0,3).equals("!!!")) {
-			if (fancyImage == null)
-				fancyImage = g.loadImage("images"+FileIO.fileSep+map.get(m).get(2));
+			if (fancyImage == null) {
+				if (map.get(m).get(2).equalsIgnoreCase("player"))
+					fancyImage = g.loadImage("images" + FileIO.fileSep + "sel" + GUI.selected + ".png");
+				else
+					fancyImage = g.loadImage("images"+FileIO.fileSep+map.get(m).get(2));
+			}
 			g.background((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255));
 			g.imageMode(PConstants.CENTER);
 			g.image(fancyImage, g.width/2, g.height/2, g.width*0.6f, g.height*0.8f);
@@ -187,6 +191,12 @@ public class Map {
 							break;
 						case 5:
 							GUI.enemies.add(new Shelby());
+							break;
+						case 6:
+							GUI.enemies.add(new Antagonist());
+							break;
+						case 7:
+							GUI.enemies.add(new Antagonist(true));
 							break;
 					}
 				}
