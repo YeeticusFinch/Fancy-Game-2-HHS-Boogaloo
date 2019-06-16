@@ -32,6 +32,7 @@ public class Anand extends Person {
 	int personality = 0;
 	private int shoot = 0;
 	private int tmx, tmy;
+	private boolean yoink;
 	
 	public Anand() {
 		super(3, 4, 20); //Speed, Damage, HP
@@ -181,8 +182,12 @@ public class Anand extends Person {
 		} else if (mode == 2 && personality == 0 && altIcon != null) {
 			altIcon = null;
 		}
+		if (!keys[32])
+			yoink = false;
 		
 		if (keys[32]) {
+			if (nukes.size()>0)
+				yoink = true;
 			for (int i = 0; i < nukes.size(); i++) {
 				if (Math.random() > 0.1) {
 					if (unlocked && mode == 0) {
@@ -195,13 +200,27 @@ public class Anand extends Person {
 				}
 				nukes.remove(i);
 			}
-			if (mode == 1 && ironman && (keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT]) && fuel > 1) {
-				speed = (int)(maxSpeed*6);
-				fuel--;
-			} else
+			if (mode == 1 && ironman && fuel > 1) {
+				if ((keys[g.UP] || keys[g.DOWN] || keys[g.LEFT] || keys[g.RIGHT])) {
+					speed = (int)(maxSpeed*4);
+					fuel--;
+				} else if (fuel > 10 && !yoink) {
+					this.x = (int)(g.mouseX-GUI.tx);
+					this.y = (int)(g.mouseY-GUI.ty);
+					fuel-=10;
+				}
+			} else {
+				if (ironman)
+					speed = maxSpeed/4;
+				else
+					speed = maxSpeed;
+			}
+		} else{
+			if (ironman)
+				speed = maxSpeed/3;
+			else
 				speed = maxSpeed;
-		} else
-			speed = maxSpeed;
+		}
 		
 		if (nukePic == null)
 			nukePic = g.loadImage("images" + FileIO.fileSep + "nuke.png");
