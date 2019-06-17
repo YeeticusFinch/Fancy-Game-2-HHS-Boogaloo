@@ -198,6 +198,9 @@ public class Map {
 						case 7:
 							GUI.enemies.add(new Antagonist(true));
 							break;
+						case 8:
+							GUI.enemies.add(new Stalin());
+							break;
 					}
 				}
 			}
