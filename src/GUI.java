@@ -40,8 +40,11 @@ public class GUI extends PApplet {
 		for (int i = 0; i < sel.length; i++) {
 			sel[i] = loadImage("images" + System.getProperty("file.separator") + "sel" + i + ".png");
 		}
-		map.loadMap(0);
-		map.setMap(0);
+		for (int i = 0; i < 19; i++) {
+			map.loadMap(i);
+		}
+		//map.loadMap(0);
+		map.setMap(18);
 		
 	}
 	

@@ -201,6 +201,9 @@ public class Map {
 						case 8:
 							GUI.enemies.add(new Stalin());
 							break;
+						case 9:
+							GUI.enemies.add(new Nunez());
+							break;
 					}
 				}
 			}
