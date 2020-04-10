@@ -215,6 +215,15 @@ public class GUI extends PApplet {
 			}
 		} else if (phase == PLAY && player.fox < 1) { // W = 87, A = 65, S = 83, D = 68, Q = 81, E = 69
 			
+			if (keyCode == 87)
+				keyCode = this.UP;
+			else if (keyCode == 65)
+				keyCode = this.LEFT;
+			else if (keyCode == 83)
+				keyCode = this.DOWN;
+			else if (keyCode == 68)
+				keyCode = this.RIGHT;
+			
 			keys[keyCode] = true;
 			if (keyCode == 192) { // REEE CHEATING
 				enemies.clear();
@@ -232,6 +241,14 @@ public class GUI extends PApplet {
 	
 	public void keyReleased() {
 		if (phase == PLAY) {
+			if (keyCode == 87)
+				keyCode = this.UP;
+			else if (keyCode == 65)
+				keyCode = this.LEFT;
+			else if (keyCode == 83)
+				keyCode = this.DOWN;
+			else if (keyCode == 68)
+				keyCode = this.RIGHT;
 			keys[keyCode] = false;
 		}
 	}
